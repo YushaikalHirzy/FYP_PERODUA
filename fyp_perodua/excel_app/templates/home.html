@@ -1,12 +1,129 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Homepage</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        /* Navigation Bar Styles */
+        .navbar {
+            width: 100%;
+            background-color: #4A90E2; /* Primary color */
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            position: absolute;
+            top: 0;
+        }
+
+        .navbar .icon {
+            margin-right: 15px; /* Space between icon and nav links */
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        .navbar .icon img {
+            height: 80%; /* Scale the image height relative to navbar height */
+            max-width: 70px;
+            object-fit: contain; /* Ensures the image maintains its aspect ratio */
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            justify-content: center;
+            flex-grow: 1; /* Allow the links to grow and center themselves */
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            margin: 0 10px; /* Space between links */
+        }
+
+        .navbar a:hover {
+            background-color: #357ABD; /* Darker shade for hover */
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #4A90E2; /* Primary color */
+        }
+
+        .container {
+            text-align: center;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            background-color: #4A90E2; /* Primary button color */
+            text-decoration: none;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #357ABD; /* Darker shade for hover */
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the Homepage!</h1>
-    <a href="{% url 'upload_excel' %}">Go to Upload Page</a>
-    <a href="{% url 'view_data' %}">View Data</a>
-</body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        {% load static %}
+        <div class="icon">
+            <img src="{% static 'excel_app/images/LOGO PERODUA.png' %}" alt="Logo"> 
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'upload_excel' %}">Upload Page</a>
+            <a href="{% url 'view_data' %}">View Data</a>
+        </div>
+        <div>
+            <a href="{% url 'logout' %}" class="button">Sign Out</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h1>Welcome to Perodua Vendor Management System!</h1>
+        <a class="button" href="{% url 'upload_excel' %}">Go to Upload Page</a>
+        <a class="button" href="{% url 'view_data' %}">View Data</a>
+    </div>
+    
+    <div class="footer">
+        <p>&copy; 2024 Perodua. All Rights Reserved.</p>
+    </div>
 </body>
 </html>

@@ -1,19 +1,111 @@
-<h2>Data Uploaded</h2>
-<table border="5">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Gender</th>
-            <th>Address</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for row in data %}
-            <tr>
-                <td>{{ row.name }}</td>
-                <td>{{ row.gender }}</td>
-                <td>{{ row.address }}</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Uploaded</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9; /* Light gray background */
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #4A90E2; /* Primary color */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse; /* Remove space between borders */
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left; /* Align text to the left */
+            border-bottom: 1px solid #ddd; /* Add a light border for separation */
+        }
+
+        th {
+            background-color: #4A90E2; /* Header background color */
+            color: white; /* Header text color */
+        }
+
+        tr:hover {
+            background-color: #f1f1f1; /* Highlight row on hover */
+        }
+
+        .container {
+            max-width: 1200px; /* Limit width for larger screens */
+            margin: 0 auto; /* Center the table */
+            background: white; /* White background for the table */
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
+            overflow: hidden; /* Prevent content overflow */
+        }
+
+        /* Conditional styles for overall columns */
+        .green {
+            background-color: #c8e6c9; /* Light green */
+        }
+
+        .yellow {
+            background-color: #fff9c4; /* Light yellow */
+        }
+
+        .red {
+            background-color: #ffccbc; /* Light red */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Data Uploaded</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Vendor</th>
+                    <th>Short Name</th>
+                    <th>Vendor Code</th>
+                    <th>Overall 2018</th>
+                    <th>Overall 2019</th>
+                    <th>Overall 2020</th>
+                    <th>Overall 2021</th>
+                    <th>Overall 2022</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                    <tr>
+                        <td>{{ row.num }}</td>
+                        <td>{{ row.vendor }}</td>
+                        <td>{{ row.short_name }}</td>
+                        <td>{{ row.vendor_code }}</td>
+                        <td class="{% if row.overall_2018 == 'G' %}green{% elif row.overall_2018 == 'Y' %}yellow{% elif row.overall_2018 == 'R' %}red{% endif %}">
+                            {{ row.overall_2018 }}
+                        </td>
+                        <td class="{% if row.overall_2019 == 'G' %}green{% elif row.overall_2019 == 'Y' %}yellow{% elif row.overall_2019 == 'R' %}red{% endif %}">
+                            {{ row.overall_2019 }}
+                        </td>
+                        <td class="{% if row.overall_2020 == 'G' %}green{% elif row.overall_2020 == 'Y' %}yellow{% elif row.overall_2020 == 'R' %}red{% endif %}">
+                            {{ row.overall_2020 }}
+                        </td>
+                        <td class="{% if row.overall_2021 == 'G' %}green{% elif row.overall_2021 == 'Y' %}yellow{% elif row.overall_2021 == 'R' %}red{% endif %}">
+                            {{ row.overall_2021 }}
+                        </td>
+                        <td class="{% if row.overall_2022 == 'G' %}green{% elif row.overall_2022 == 'Y' %}yellow{% elif row.overall_2022 == 'R' %}red{% endif %}">
+                            {{ row.overall_2022 }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
