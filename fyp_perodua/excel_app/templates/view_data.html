@@ -14,7 +14,7 @@
             padding: 20px;
         }
 
-        h2 {
+        h1 {
             text-align: center;
             color: #4A90E2; /* Primary color */
         }
@@ -51,61 +51,132 @@
 
         /* Conditional styles for overall columns */
         .green {
-            background-color: #c8e6c9; /* Light green */
+            background-color: #56db5a; /* Light green */
         }
 
         .yellow {
-            background-color: #fff9c4; /* Light yellow */
+            background-color: #fff386; /* Light yellow */
         }
 
         .red {
-            background-color: #ffccbc; /* Light red */
+            background-color: #ff6739; /* Light red */
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Data Uploaded</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Vendor</th>
-                    <th>Short Name</th>
-                    <th>Vendor Code</th>
-                    <th>Overall 2018</th>
-                    <th>Overall 2019</th>
-                    <th>Overall 2020</th>
-                    <th>Overall 2021</th>
-                    <th>Overall 2022</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in data %}
-                    <tr>
-                        <td>{{ row.num }}</td>
-                        <td>{{ row.vendor }}</td>
-                        <td>{{ row.short_name }}</td>
-                        <td>{{ row.vendor_code }}</td>
-                        <td class="{% if row.overall_2018 == 'G' %}green{% elif row.overall_2018 == 'Y' %}yellow{% elif row.overall_2018 == 'R' %}red{% endif %}">
-                            {{ row.overall_2018 }}
-                        </td>
-                        <td class="{% if row.overall_2019 == 'G' %}green{% elif row.overall_2019 == 'Y' %}yellow{% elif row.overall_2019 == 'R' %}red{% endif %}">
-                            {{ row.overall_2019 }}
-                        </td>
-                        <td class="{% if row.overall_2020 == 'G' %}green{% elif row.overall_2020 == 'Y' %}yellow{% elif row.overall_2020 == 'R' %}red{% endif %}">
-                            {{ row.overall_2020 }}
-                        </td>
-                        <td class="{% if row.overall_2021 == 'G' %}green{% elif row.overall_2021 == 'Y' %}yellow{% elif row.overall_2021 == 'R' %}red{% endif %}">
-                            {{ row.overall_2021 }}
-                        </td>
-                        <td class="{% if row.overall_2022 == 'G' %}green{% elif row.overall_2022 == 'Y' %}yellow{% elif row.overall_2022 == 'R' %}red{% endif %}">
-                            {{ row.overall_2022 }}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+      <!-- Button to go back to home page -->
+  <br>
+  <a href="{% url 'home' %}">
+    <button type="button">Go Back to Home</button>
+  </a>
+    <div class="container mt-5">
+        <h1>Vendor Data</h1>
+        <!-- Add New Vendor Grade Data Button -->
+        <a href="{% url 'grade_data_add' %}" class="btn btn-success mb-3">Add New Vendor Grade</a>
+        <div class="row">
+            <!-- Vendor Grade Data Section -->
+            <div class="col-md-6">
+                <h3>Vendor Grade Data</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>NO</th>
+                            <th>Vendor</th>
+                            <th>Short Name</th>
+                            <th>Vendor Code</th>
+                            <th>Overall 2018</th>
+                            <th>Overall 2019</th>
+                            <th>Overall 2020</th>
+                            <th>Overall 2021</th>
+                            <th>Overall 2022</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for data in grade_data %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td> <!-- You can use the forloop.counter for numbering -->
+                            <td>{{ data.vendor }}</td>
+                            <td>{{ data.short_name }}</td>
+                            <td>{{ data.vendor_code }}</td>
+                            <td class="{% if data.overall_2018 == 'G' %}green{% elif data.overall_2018 == 'Y' %}yellow{% elif data.overall_2018 == 'R' %}red{% endif %}">
+                                {{ data.overall_2018 }}
+                            </td>
+                            <td class="{% if data.overall_2019 == 'G' %}green{% elif data.overall_2019 == 'Y' %}yellow{% elif data.overall_2019 == 'R' %}red{% endif %}">
+                                {{ data.overall_2019 }}
+                            </td>
+                            <td class="{% if data.overall_2020 == 'G' %}green{% elif data.overall_2020 == 'Y' %}yellow{% elif data.overall_2020 == 'R' %}red{% endif %}">
+                                {{ data.overall_2020 }}
+                            </td>
+                            <td class="{% if data.overall_2021 == 'G' %}green{% elif data.overall_2021 == 'Y' %}yellow{% elif data.overall_2021 == 'R' %}red{% endif %}">
+                                {{ data.overall_2021 }}
+                            </td>
+                            <td class="{% if data.overall_2022 == 'G' %}green{% elif data.overall_2022 == 'Y' %}yellow{% elif data.overall_2022 == 'R' %}red{% endif %}">
+                                {{ data.overall_2022 }}
+                            </td>
+                            <td>
+                                <!-- Edit Button -->
+                                <a href="{% url 'grade_data_edit' data.pk %}" class="btn btn-primary btn-sm">Edit</a>
+                                <!-- Delete Button -->
+                                <a href="{% url 'grade_data_delete' data.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <!-- Button to delete all Vendor Grade Data -->
+                <form method="POST" action="{% url 'delete_all_grade_data' %}">
+                    {% csrf_token %}
+                    <button type="submit" onclick="return confirm('Are you sure you want to delete all vendor grade data?')">Delete All Vendor Grade Data</button>
+                </form>
+            </div>
+
+            <!-- Vendor Spend Data Section -->
+            <div class="col-md-6">
+                <h3>Vendor Spend Data</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Vendor</th>
+                            <th>Vendor Code</th>
+                            <th>Grand Total 2019</th>
+                            <th>Grand Total 2020</th>
+                            <th>Grand Total 2021</th>
+                            <th>Grand Total 2022</th>
+                            <th>Grand Total 2023</th>
+                            <th>Total (5 Years)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for data in spend_data %}
+                        <tr>
+                            <td>{{ data.vendor }}</td>
+                            <td>{{ data.vendor_code }}</td>
+                            <td>RM{{ data.grand_total_2019 }}</td>
+                            <td>RM{{ data.grand_total_2020 }}</td>
+                            <td>RM{{ data.grand_total_2021 }}</td>
+                            <td>RM{{ data.grand_total_2022 }}</td>
+                            <td>RM{{ data.grand_total_2023 }}</td>
+                            <td>RM{{ data.overall_5_years }}</td>
+                            <td>
+                                <!-- Edit Button -->
+                                <a href="{% url 'spend_data_edit' data.pk %}" class="btn btn-primary btn-sm">Edit</a>
+                                <!-- Delete Button -->
+                                <a href="{% url 'spend_data_delete' data.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <!-- Button to delete all Vendor Spend Data -->
+                <form method="POST" action="{% url 'delete_all_spend_data' %}">
+                    {% csrf_token %}
+                    <button type="submit" onclick="return confirm('Are you sure you want to delete all vendor spend data?')">Delete All Vendor Spend Data</button>
+                </form>
+            </div>
+        </div>
     </div>
+
+    <!-- Bootstrap JS (optional for interactivity) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

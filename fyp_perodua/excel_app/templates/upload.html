@@ -54,6 +54,10 @@
         input[type="file"]:hover {
             border-color: #6610f2;
         }
+        .clear-btn {
+            margin-bottom: 10px;
+            display: none; /* Initially hidden */
+        }
     </style>
 </head>
 <body>
@@ -67,16 +71,43 @@
                     <div class="card-body">
                         <form action="{% url 'upload_excel' %}" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
-                            <input type="file" name="file" class="form-control mb-4">
+                            <label for="vendor_data_file">Upload Vendor Grade Data Excel File:</label>
+                            <input type="file" name="vendor_data_file" class="form-control mb-4" required>
+                            
+                            <label for="spend_data_file">Upload Vendor Spend Data Excel File:</label>
+                            <input type="file" name="spend_data_file" class="form-control mb-4" required>
+                            
                             <button type="submit" class="btn btn-custom btn-block w-100">Upload</button>
                         </form>
+                        
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
 
     <!-- Bootstrap JS (Optional) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript to handle file clear functionality -->
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const clearFileBtn = document.getElementById('clearFile');
+
+        // Show the "Clear File" button when a file is selected
+        fileInput.addEventListener('change', function() {
+            if (fileInput.value) {
+                clearFileBtn.style.display = 'inline-block';
+            }
+        });
+
+        // Clear the file input when the "Clear File" button is clicked
+        clearFileBtn.addEventListener('click', function() {
+            fileInput.value = ''; // Clear the file input
+            clearFileBtn.style.display = 'none'; // Hide the clear button again
+        });
+    </script>
 </body>
 </html>
+
