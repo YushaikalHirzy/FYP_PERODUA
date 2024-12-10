@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import upload_excel, home_view, view_data, login_view, register_view,logout_view,delete_all_vendor_grade_data,delete_all_vendor_spend_data
+from .views import upload_excel, home_view, view_data, login_view, vendor_landscape, register_view, logout_view,delete_all_vendor_grade_data,delete_all_vendor_spend_data, delete_all_vendor_matrix_data
 from .views import (
     VendorGradeDataListView, VendorGradeDataCreateView, VendorGradeDataUpdateView, VendorGradeDataDeleteView,
     VendorSpendDataListView, VendorSpendDataCreateView, VendorSpendDataUpdateView, VendorSpendDataDeleteView
@@ -10,8 +10,11 @@ urlpatterns = [
     path('register/', register_view, name='register'),
     path('upload/', upload_excel, name='upload_excel'),
     path('view-data/', view_data, name='view_data'),
+    path('vendor-grade/', view_data, name='vendor_grade'),
     path('home/', home_view, name='home'), 
     path('logout/', logout_view, name='logout'),
+    #path('view-landcape/', view_landscape, name='view_landscape'),
+    path('vendor-landscape/', vendor_landscape, name='vendor_landscape'),
 
     # Vendor Grade Data URLs
     path('vendor-grade/', VendorGradeDataListView.as_view(), name='grade_data_list'),
@@ -27,4 +30,5 @@ urlpatterns = [
 
     path('delete-all-grade-data/', delete_all_vendor_grade_data, name='delete_all_grade_data'),
     path('delete-all-spend-data/', delete_all_vendor_spend_data, name='delete_all_spend_data'),
+    path('delete-all-matrix-data/', delete_all_vendor_matrix_data, name='delete_all_matrix_data'),
 ]

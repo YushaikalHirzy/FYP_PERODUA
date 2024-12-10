@@ -1,6 +1,12 @@
-<h1>Are you sure you want to delete {{ object.vendor }}?</h1>
-<form method="post">
+<h1 style="text-align: center; color: #357ABD; margin-bottom: 20px; font-size: 2.5em;">Are you sure you want to delete {{ object.vendor }}?</h1>
+<form method="post" style="max-width: 400px; margin: 0 auto; padding: 20px; border: 2px solid #357ABD; border-radius: 10px; background-color: #f0f8ff; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); text-align: center;">
     {% csrf_token %}
-    <button type="submit">Yes, delete</button>
-    <a href="{% url 'view_data' %}">Cancel</a>
+    <button type="submit" style="width: 100%; padding: 12px; background: linear-gradient(45deg, #357ABD, #9c33ff); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; transition: background 0.3s ease;">
+        Yes, delete
+    </button>
+    <br><br>
+    <a href="{% url 'view_data' %}" style="display: inline-block; margin-top: 10px; color: #007bff; text-decoration: none; font-size: 16px; padding: 10px; border: 1px solid #007bff; border-radius: 5px; transition: background 0.3s ease;">
+        Cancel
+    </a>
 </form>
+

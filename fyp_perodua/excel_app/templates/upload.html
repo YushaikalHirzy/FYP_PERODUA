@@ -58,9 +58,74 @@
             margin-bottom: 10px;
             display: none; /* Initially hidden */
         }
+         /* Navigation Bar Styles */
+         .navbar {
+            width: 100%;
+            background-color: #4A90E2; /* Primary color */
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            position: absolute;
+            top: 0;
+        }
+
+        .navbar .icon {
+            margin-right: 15px; /* Space between icon and nav links */
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        .navbar .icon img {
+            height: 80%; /* Scale the image height relative to navbar height */
+            max-width: 70px;
+            object-fit: contain; /* Ensures the image maintains its aspect ratio */
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            justify-content: center;
+            flex-grow: 1; /* Allow the links to grow and center themselves */
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            margin: 0 10px; /* Space between links */
+        }
+
+        .navbar a:hover {
+            background-color: #357ABD; /* Darker shade for hover */
+        }
+
+        /* Adjust margin-top for the container to avoid overlap */
+        .container {
+            margin-top: 80px; /* Adjust this value to match the navbar's height */
+        }
+
     </style>
 </head>
 <body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        {% load static %}
+        <div class="icon">
+            <!-- Make the logo a clickable link to the home page -->
+            <a href="{% url 'home' %}">
+                <img src="{% static 'excel_app/images/LOGO PERODUA.png' %}" alt="Logo">
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'upload_excel' %}">Upload Page</a>
+            <a href="{% url 'view_data' %}">View Data</a>
+            <a href="{% url 'vendor_landscape' %}">Vendor Landscape</a>
+        </div>
+        <div>
+            <a href="{% url 'logout' %}" class="button">Sign Out</a>
+        </div>
+    </div>
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
@@ -77,6 +142,9 @@
                             <label for="spend_data_file">Upload Vendor Spend Data Excel File:</label>
                             <input type="file" name="spend_data_file" class="form-control mb-4" required>
                             
+                            <label for="matrix_data_file">Upload Vendor Matrix Data Excel File:</label>
+                            <input type="file" name="matrix_data_file" class="form-control mb-4" required>
+
                             <button type="submit" class="btn btn-custom btn-block w-100">Upload</button>
                         </form>
                         

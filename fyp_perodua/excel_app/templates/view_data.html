@@ -14,7 +14,7 @@
             padding: 20px;
         }
 
-        h1 {
+        h1, h3 {
             text-align: center;
             color: #4A90E2; /* Primary color */
         }
@@ -49,6 +49,20 @@
             overflow: hidden; /* Prevent content overflow */
         }
 
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            color: white;
+            background-color: #4A90E2;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #357ABD;
+        }
+
         /* Conditional styles for overall columns */
         .green {
             background-color: #56db5a; /* Light green */
@@ -61,122 +75,260 @@
         .red {
             background-color: #ff6739; /* Light red */
         }
+
+        .section-buttons {
+            padding-top: 60px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Navigation Bar Styles */
+        .navbar {
+            width: 100%;
+            background-color: #4A90E2; /* Primary color */
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Space between logo and links */
+            padding: 10px 20px;
+            position: fixed; /* Ensure the navbar stays at the top while scrolling */
+            top: 0;
+            z-index: 1000; /* Ensure the navbar appears on top of other content */
+        }
+
+        .navbar .icon {
+            margin-right: 15px; /* Space between icon and nav links */
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        .navbar .icon img {
+            height: 80%; /* Scale the image height relative to navbar height */
+            max-width: 70px;
+            object-fit: contain; /* Ensures the image maintains its aspect ratio */
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            justify-content: center;
+            flex-grow: 1; /* Allow the links to grow and center themselves */
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            margin: 0 10px; /* Space between links */
+        }
+
+        .navbar a:hover {
+            background-color: #357ABD; /* Darker shade for hover */
+        }
+        
+        body {
+            padding-top: 60px; /* Adjust based on navbar height */
+        }
+
     </style>
 </head>
 <body>
-      <!-- Button to go back to home page -->
-  <br>
-  <a href="{% url 'home' %}">
-    <button type="button">Go Back to Home</button>
-  </a>
-    <div class="container mt-5">
-        <h1>Vendor Data</h1>
-        <!-- Add New Vendor Grade Data Button -->
-        <a href="{% url 'grade_data_add' %}" class="btn btn-success mb-3">Add New Vendor Grade</a>
-        <div class="row">
-            <!-- Vendor Grade Data Section -->
-            <div class="col-md-6">
-                <h3>Vendor Grade Data</h3>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>NO</th>
-                            <th>Vendor</th>
-                            <th>Short Name</th>
-                            <th>Vendor Code</th>
-                            <th>Overall 2018</th>
-                            <th>Overall 2019</th>
-                            <th>Overall 2020</th>
-                            <th>Overall 2021</th>
-                            <th>Overall 2022</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for data in grade_data %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td> <!-- You can use the forloop.counter for numbering -->
-                            <td>{{ data.vendor }}</td>
-                            <td>{{ data.short_name }}</td>
-                            <td>{{ data.vendor_code }}</td>
-                            <td class="{% if data.overall_2018 == 'G' %}green{% elif data.overall_2018 == 'Y' %}yellow{% elif data.overall_2018 == 'R' %}red{% endif %}">
-                                {{ data.overall_2018 }}
-                            </td>
-                            <td class="{% if data.overall_2019 == 'G' %}green{% elif data.overall_2019 == 'Y' %}yellow{% elif data.overall_2019 == 'R' %}red{% endif %}">
-                                {{ data.overall_2019 }}
-                            </td>
-                            <td class="{% if data.overall_2020 == 'G' %}green{% elif data.overall_2020 == 'Y' %}yellow{% elif data.overall_2020 == 'R' %}red{% endif %}">
-                                {{ data.overall_2020 }}
-                            </td>
-                            <td class="{% if data.overall_2021 == 'G' %}green{% elif data.overall_2021 == 'Y' %}yellow{% elif data.overall_2021 == 'R' %}red{% endif %}">
-                                {{ data.overall_2021 }}
-                            </td>
-                            <td class="{% if data.overall_2022 == 'G' %}green{% elif data.overall_2022 == 'Y' %}yellow{% elif data.overall_2022 == 'R' %}red{% endif %}">
-                                {{ data.overall_2022 }}
-                            </td>
-                            <td>
-                                <!-- Edit Button -->
-                                <a href="{% url 'grade_data_edit' data.pk %}" class="btn btn-primary btn-sm">Edit</a>
-                                <!-- Delete Button -->
-                                <a href="{% url 'grade_data_delete' data.pk %}" class="btn btn-danger btn-sm">Delete</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                <!-- Button to delete all Vendor Grade Data -->
-                <form method="POST" action="{% url 'delete_all_grade_data' %}">
-                    {% csrf_token %}
-                    <button type="submit" onclick="return confirm('Are you sure you want to delete all vendor grade data?')">Delete All Vendor Grade Data</button>
-                </form>
-            </div>
-
-            <!-- Vendor Spend Data Section -->
-            <div class="col-md-6">
-                <h3>Vendor Spend Data</h3>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Vendor</th>
-                            <th>Vendor Code</th>
-                            <th>Grand Total 2019</th>
-                            <th>Grand Total 2020</th>
-                            <th>Grand Total 2021</th>
-                            <th>Grand Total 2022</th>
-                            <th>Grand Total 2023</th>
-                            <th>Total (5 Years)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for data in spend_data %}
-                        <tr>
-                            <td>{{ data.vendor }}</td>
-                            <td>{{ data.vendor_code }}</td>
-                            <td>RM{{ data.grand_total_2019 }}</td>
-                            <td>RM{{ data.grand_total_2020 }}</td>
-                            <td>RM{{ data.grand_total_2021 }}</td>
-                            <td>RM{{ data.grand_total_2022 }}</td>
-                            <td>RM{{ data.grand_total_2023 }}</td>
-                            <td>RM{{ data.overall_5_years }}</td>
-                            <td>
-                                <!-- Edit Button -->
-                                <a href="{% url 'spend_data_edit' data.pk %}" class="btn btn-primary btn-sm">Edit</a>
-                                <!-- Delete Button -->
-                                <a href="{% url 'spend_data_delete' data.pk %}" class="btn btn-danger btn-sm">Delete</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                <!-- Button to delete all Vendor Spend Data -->
-                <form method="POST" action="{% url 'delete_all_spend_data' %}">
-                    {% csrf_token %}
-                    <button type="submit" onclick="return confirm('Are you sure you want to delete all vendor spend data?')">Delete All Vendor Spend Data</button>
-                </form>
-            </div>
+<!-- Navigation Bar -->
+    <div class="navbar">
+        {% load static %}
+        <div class="icon">
+            <!-- Make the logo a clickable link to the home page -->
+            <a href="{% url 'home' %}">
+                <img src="{% static 'excel_app/images/LOGO PERODUA.png' %}" alt="Logo">
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'upload_excel' %}">Upload Page</a>
+            <a href="{% url 'view_data' %}">View Data</a>
+            <a href="{% url 'vendor_landscape' %}">Vendor Landscape</a>
+        </div>
+        <div>
+            <a href="{% url 'logout' %}" class="button">Sign Out</a>
         </div>
     </div>
 
-    <!-- Bootstrap JS (optional for interactivity) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Section Buttons -->
+    <div class="section-buttons">
+        <button onclick="scrollToSection('grade-section')">Vendor Grade Data</button>
+        <button onclick="scrollToSection('spend-section')">Vendor Spend Data</button>
+        <button onclick="scrollToSection('matrix-section')">Vendor Matrix Data</button>
+    </div>
+
+    <!-- Container -->
+    <div class="container mt-5">
+        <h1>Vendor Data</h1>
+        
+        <!-- Vendor Grade Data Section -->
+        <div id="grade-section">
+            <h3>Vendor Grade Data</h3>
+            <a href="{% url 'grade_data_add' %}" class="btn btn-success mb-3">Add New Vendor Grade</a>
+            <table>
+                <thead>
+                    <tr>
+                        <th>NO</th>
+                        <th>Vendor</th>
+                        <th>Short Name</th>
+                        <th>Vendor Code</th>
+                        <th>Overall 2018</th>
+                        <th>Overall 2019</th>
+                        <th>Overall 2020</th>
+                        <th>Overall 2021</th>
+                        <th>Overall 2022</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in grade_data %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ data.vendor }}</td>
+                        <td>{{ data.short_name }}</td>
+                        <td>{{ data.vendor_code }}</td>
+                        <td class="{% if data.overall_2018 == 'G' %}green{% elif data.overall_2018 == 'Y' %}yellow{% elif data.overall_2018 == 'R' %}red{% endif %}">
+                            {{ data.overall_2018 }}
+                        </td>
+                        <td class="{% if data.overall_2019 == 'G' %}green{% elif data.overall_2019 == 'Y' %}yellow{% elif data.overall_2019 == 'R' %}red{% endif %}">
+                            {{ data.overall_2019 }}
+                        </td>
+                        <td class="{% if data.overall_2020 == 'G' %}green{% elif data.overall_2020 == 'Y' %}yellow{% elif data.overall_2020 == 'R' %}red{% endif %}">
+                            {{ data.overall_2020 }}
+                        </td>
+                        <td class="{% if data.overall_2021 == 'G' %}green{% elif data.overall_2021 == 'Y' %}yellow{% elif data.overall_2021 == 'R' %}red{% endif %}">
+                            {{ data.overall_2021 }}
+                        </td>
+                        <td class="{% if data.overall_2022 == 'G' %}green{% elif data.overall_2022 == 'Y' %}yellow{% elif data.overall_2022 == 'R' %}red{% endif %}">
+                            {{ data.overall_2022 }}
+                        </td>
+                        <td>
+                            <a href="{% url 'grade_data_edit' data.pk %}" class="btn btn-primary btn-sm">Edit</a>
+                            <a href="{% url 'grade_data_delete' data.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <form method="POST" action="{% url 'delete_all_grade_data' %}">
+                {% csrf_token %}
+                <button type="submit" onclick="return confirm('Are you sure you want to delete all vendor grade data?')">Delete All Vendor Grade Data</button>
+            </form>
+        </div>
+
+        <!-- Vendor Spend Data Section -->
+        <div id="spend-section">
+            <h3>Vendor Spend Data</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Vendor</th>
+                        <th>Vendor Code</th>
+                        <th>Grand Total 2019</th>
+                        <th>Grand Total 2020</th>
+                        <th>Grand Total 2021</th>
+                        <th>Grand Total 2022</th>
+                        <th>Grand Total 2023</th>
+                        <th>Total (5 Years)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in spend_data %}
+                    <tr>
+                        <td>{{ data.vendor }}</td>
+                        <td>{{ data.vendor_code }}</td>
+                        <td>RM{{ data.grand_total_2019 }}</td>
+                        <td>RM{{ data.grand_total_2020 }}</td>
+                        <td>RM{{ data.grand_total_2021 }}</td>
+                        <td>RM{{ data.grand_total_2022 }}</td>
+                        <td>RM{{ data.grand_total_2023 }}</td>
+                        <td>RM{{ data.overall_5_years }}</td>
+                        <td>
+                            <a href="{% url 'spend_data_edit' data.pk %}" class="btn btn-primary btn-sm">Edit</a>
+                            <a href="{% url 'spend_data_delete' data.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <form method="POST" action="{% url 'delete_all_spend_data' %}">
+                {% csrf_token %}
+                <button type="submit" onclick="return confirm('Are you sure you want to delete all vendor spend data?')">Delete All Vendor Spend Data</button>
+            </form>
+        </div>
+
+        <!-- Vendor Matrix Data Section -->
+        <div id="matrix-section">
+            <h3>Vendor Matrix Data</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Vendor</th>
+                        <th>GIPV</th>
+                        <th>Cost Reduction Activity</th>
+                        <th>PPKV</th>
+                        <th>DTE</th>
+                        <th>BEEP</th>
+                        <th>TMIEP</th>
+                        <th>Trade Mission</th>
+                        <th>Lean Mgmt.</th>
+                        <th>Kaizen</th>
+                        <th>ICC</th>
+                        <th>Contract. Nego. Skill</th>
+                        <th>SSPOA</th>
+                        <th>eSPO</th>
+                        <th>VIP2</th>
+                        <th>IR4.0</th>
+                        <th>Remarks</th>
+                        <th>O-Rating</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in matrix_data %}
+                    <tr>
+                        <td>{{ data.vendor }}</td>
+                        <td>{{ data.gipv }}</td>
+                        <td>{{ data.cost_reduction_activity }}</td>
+                        <td>{{ data.ppkv }}</td>
+                        <td>{{ data.dte }}</td>
+                        <td>{{ data.beep }}</td>
+                        <td>{{ data.tmiep }}</td>
+                        <td>{{ data.trade_mission }}</td>
+                        <td>{{ data.lean_management }}</td>
+                        <td>{{ data.kaizen }}</td>
+                        <td>{{ data.icc }}</td>
+                        <td>{{ data.contract_negotiation_skill }}</td>
+                        <td>{{ data.sspoa }}</td>
+                        <td>{{ data.espo }}</td>
+                        <td>{{ data.vip2 }}</td>
+                        <td>{{ data.ir40 }}</td>
+                        <td>{{ data.remarks }}</td>
+                        <td>{{ data.o_rating }}</td>
+                        <td>
+                            <a href="{% url 'matrix_data_edit' data.pk %}" class="btn btn-primary btn-sm">Edit</a>
+                            <a href="{% url 'matrix_data_delete' data.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <form method="POST" action="{% url 'delete_all_matrix_data' %}">
+                {% csrf_token %}
+                <button type="submit" onclick="return confirm('Are you sure you want to delete all vendor matrix data?')">Delete All Vendor Matrix Data</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
 </body>
 </html>
