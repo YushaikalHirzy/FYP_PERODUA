@@ -4,178 +4,164 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vendor Data Upload</title>
-    <!-- Bootstrap CDN -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         body {
             background-color: #f7f9fc;
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
         .container {
-            margin-top: 50px;
+            margin-top: 100px;
         }
         .card {
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-10px);
         }
         .card-header {
-            background: linear-gradient(90deg, #007bff, #6610f2);
+            background: linear-gradient(90deg, #4A90E2, #00bcd4);
             color: white;
             text-align: center;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             padding: 20px;
-            border-radius: 12px 12px 0 0;
+            border-radius: 16px 16px 0 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .btn-custom {
-            background-color: #6610f2;
+            background-color: #4A90E2;
             color: white;
             border-radius: 20px;
-            padding: 10px 20px;
+            padding: 12px 25px;
             transition: all 0.3s ease;
         }
         .btn-custom:hover {
-            background-color: #007bff;
+            background-color: #2e59d9;
             color: white;
+            transform: scale(1.05);
         }
-        input[type="file"] {
-            display: block;
-            margin: 0 auto 20px;
-            padding: 10px;
-            border: 2px dashed #007bff;
-            border-radius: 8px;
+                /* Navbar Styles */
+                .navbar {
+            background: linear-gradient(90deg, #4A90E2, #00bcd4);
+            color: white;
             width: 100%;
-            max-width: 400px;
-            text-align: center;
-            cursor: pointer;
-            transition: border-color 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        input[type="file"]:hover {
-            border-color: #6610f2;
+
+        .navbar .logo img {
+            height: 50px;
+            transition: transform 0.3s ease;
         }
-        .clear-btn {
-            margin-bottom: 10px;
-            display: none; /* Initially hidden */
+
+        .navbar .logo img:hover {
+            transform: scale(1.1);
         }
-         /* Navigation Bar Styles */
-         .navbar {
-            width: 100%;
-            background-color: #4A90E2; /* Primary color */
+
+        .nav-links {
             display: flex;
             align-items: center;
-            padding: 10px 20px;
-            position: absolute;
-            top: 0;
         }
 
-        .navbar .icon {
-            margin-right: 15px; /* Space between icon and nav links */
-            margin-top: 10px;
-            margin-left: 10px;
-        }
-
-        .navbar .icon img {
-            height: 80%; /* Scale the image height relative to navbar height */
-            max-width: 70px;
-            object-fit: contain; /* Ensures the image maintains its aspect ratio */
-        }
-
-        .navbar .nav-links {
-            display: flex;
-            justify-content: center;
-            flex-grow: 1; /* Allow the links to grow and center themselves */
-        }
-
-        .navbar a {
+        .nav-links a {
             color: white;
             text-decoration: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-            margin: 0 10px; /* Space between links */
+            margin: 0 15px;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: color 0.3s ease, transform 0.3s ease;
         }
 
-        .navbar a:hover {
-            background-color: #357ABD; /* Darker shade for hover */
+        .nav-links a:hover {
+            color: #f8f9fa;
+            transform: translateY(-3px);
         }
 
-        /* Adjust margin-top for the container to avoid overlap */
-        .container {
-            margin-top: 80px; /* Adjust this value to match the navbar's height */
+        .button-signout {
+            background-color: #ff4d4f;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(255, 77, 79, 0.5);
+            transition: transform 0.3s ease, background-color 0.3s ease;
         }
 
+        .button-signout:hover {
+            background-color: #e04344;
+            transform: scale(1.1);
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            transition: border 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #ff7e5f;
+            box-shadow: 0 0 5px rgba(255, 126, 95, 0.5);
+        }
+        label {
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <div class="navbar">
-        {% load static %}
-        <div class="icon">
-            <!-- Make the logo a clickable link to the home page -->
+       <!-- Navbar -->
+       <div class="navbar">
+        <div class="logo">
+            {% load static %}
             <a href="{% url 'home' %}">
-                <img src="{% static 'excel_app/images/LOGO PERODUA.png' %}" alt="Logo">
+                <img src="{% static 'excel_app/images/LOGO PERODUA.png' %}" alt="Perodua Logo">
             </a>
         </div>
         <div class="nav-links">
-            <a href="{% url 'upload_excel' %}">Upload Page</a>
+            <a href="{% url 'upload_excel' %}">Upload Data</a>
             <a href="{% url 'view_data' %}">View Data</a>
             <a href="{% url 'vendor_landscape' %}">Vendor Landscape</a>
         </div>
-        <div>
-            <a href="{% url 'logout' %}" class="button">Sign Out</a>
-        </div>
+        <a href="{% url 'logout' %}" class="button-signout">Sign Out</a>
     </div>
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header">
-                        Upload Vendor Data Excel File
-                    </div>
+                    <div class="card-header">Upload Vendor Data Excel File</div>
                     <div class="card-body">
-                        <form action="{% url 'upload_excel' %}" method="POST" enctype="multipart/form-data">
+                        <form id="uploadForm" action="{% url 'upload_excel' %}" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
-                            <label for="vendor_data_file">Upload Vendor Grade Data Excel File:</label>
-                            <input type="file" name="vendor_data_file" class="form-control mb-4" required>
-                            
-                            <label for="spend_data_file">Upload Vendor Spend Data Excel File:</label>
-                            <input type="file" name="spend_data_file" class="form-control mb-4" required>
-                            
-                            <label for="matrix_data_file">Upload Vendor Matrix Data Excel File:</label>
-                            <input type="file" name="matrix_data_file" class="form-control mb-4" required>
-
-                            <button type="submit" class="btn btn-custom btn-block w-100">Upload</button>
+                            <div class="mb-3">
+                                <label for="vendor_data_file">Upload Vendor Grade Data:</label>
+                                <input type="file" name="vendor_data_file" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="spend_data_file">Upload Vendor Spend Data:</label>
+                                <input type="file" name="spend_data_file" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="matrix_data_file">Upload Vendor Matrix Data:</label>
+                                <input type="file" name="matrix_data_file" class="form-control">
+                            </div>
+                            <button type="submit" class="btn btn-custom w-100">Upload</button>
                         </form>
-                        
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
-
-    <!-- Bootstrap JS (Optional) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- JavaScript to handle file clear functionality -->
-    <script>
-        const fileInput = document.getElementById('fileInput');
-        const clearFileBtn = document.getElementById('clearFile');
-
-        // Show the "Clear File" button when a file is selected
-        fileInput.addEventListener('change', function() {
-            if (fileInput.value) {
-                clearFileBtn.style.display = 'inline-block';
-            }
-        });
-
-        // Clear the file input when the "Clear File" button is clicked
-        clearFileBtn.addEventListener('click', function() {
-            fileInput.value = ''; // Clear the file input
-            clearFileBtn.style.display = 'none'; // Hide the clear button again
-        });
-    </script>
 </body>
 </html>
-

@@ -1,0 +1,272 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Spend Data</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #f0f4f8, #dff1ff);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+         /* Navbar Styles */
+         .navbar {
+            background: linear-gradient(90deg, #4A90E2, #00bcd4);
+            color: white;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .logo img {
+            height: 50px;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar .logo img:hover {
+            transform: scale(1.1);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #f8f9fa;
+            transform: translateY(-3px);
+        }
+
+        .button-signout {
+            background-color: #ff4d4f;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(255, 77, 79, 0.5);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .button-signout:hover {
+            background-color: #e04344;
+            transform: scale(1.1);
+        }
+
+        .container {
+            margin-top: 120px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            padding: 50px 40px;
+            display: inline-block;
+            width: auto;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #4A90E2;
+            margin-bottom: 25px;
+            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Button Styles */
+        .button-signout, .btn, .btn-secondary, .btn-primary, .btn-danger {
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            display: inline-block;
+            text-align: center;
+            margin: 10px;
+        }
+
+        .button-signout {
+            background-color: #ff4d4f;
+        }
+
+        .button-signout:hover {
+            background-color: #e04344;
+            transform: scale(1.1);
+        }
+
+        .btn {
+            background-color: #4A90E2;
+        }
+
+        .btn:hover {
+            background-color: #357ABD;
+            transform: scale(1.1);
+        }
+
+        .btn-secondary {
+            background-color: #00bcd4;
+        }
+
+        .btn-secondary:hover {
+            background-color: #00a3c4;
+            transform: scale(1.1);
+        }
+
+        .btn-primary {
+            background-color: #00bcd4;
+        }
+
+        .btn-primary:hover {
+            background-color: #00a3c4;
+            transform: scale(1.1);
+        }
+
+        .btn-danger {
+            background-color: #ff4d4f;
+        }
+
+        .btn-danger:hover {
+            background-color: #e04344;
+            transform: scale(1.1);
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 1rem;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4A90E2;
+            color: white;
+            font-weight: 600;
+        }
+
+        td a {
+            color: #fff;
+            background-color: #4A90E2;
+            padding: 8px 16px;
+            border-radius: 12px;
+            text-decoration: none;
+        }
+
+        td a:hover {
+            background-color: #357ABD;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">
+            <a href="{% url 'home' %}">
+                <img src="{% static 'excel_app/images/LOGO PERODUA.png' %}" alt="Perodua Logo">
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'upload_excel' %}">Upload Data</a>
+            <a href="{% url 'view_data' %}">View Data</a>
+            <a href="{% url 'vendor_landscape' %}">Vendor Landscape</a>
+        </div>
+        <a href="{% url 'logout' %}" class="button-signout">Sign Out</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Vendor Spend Data</h1>
+        <a href="{% url 'view_data' %}" class="btn btn-secondary">Back to Data Overview</a>
+        <a href="{% url 'spend_data_add' %}" class="btn">Add New Vendor</a>
+        <form method="POST" action="{% url 'delete_all_spend_data' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete all vendor data? This action cannot be undone!')">
+                Delete All Vendors
+            </button>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>Vendor</th>
+                    <th>Vendor Code</th>
+                    <th>Grand Total 2019</th>
+                    <th>Grand Total 2020</th>
+                    <th>Grand Total 2021</th>
+                    <th>Grand Total 2022</th>
+                    <th>Grand Total 2023</th>
+                    <th>Total (5 Years)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in spend_data %}
+                <tr>
+                    <td>{{ data.vendor }}</td>
+                    <td>{{ data.vendor_code }}</td>
+                    <td>RM{{ data.grand_total_2019 }}</td>
+                    <td>RM{{ data.grand_total_2020 }}</td>
+                    <td>RM{{ data.grand_total_2021 }}</td>
+                    <td>RM{{ data.grand_total_2022 }}</td>
+                    <td>RM{{ data.grand_total_2023 }}</td>
+                    <td>RM{{ data.overall_5_years }}</td>
+                    <td><a href="#" class="btn btn-primary">Edit</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

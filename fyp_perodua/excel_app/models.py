@@ -40,7 +40,7 @@ class VendorMatrixData(models.Model):
     ir4 = models.CharField(max_length=5, null=True)
     remarks = models.TextField(null=True)
     ongoing_project = models.TextField(null=True) 
-    status = models.TextField(null=True)  
+    status = models.TextField(null=True)
 
 
 

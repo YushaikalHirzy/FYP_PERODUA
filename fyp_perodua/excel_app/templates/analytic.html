@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Analytics</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background: linear-gradient(90deg, #4A90E2, #357ABD);
+            color: white;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .navbar:hover {
+            background: linear-gradient(90deg, #357ABD, #4A90E2);
+        }
+
+        .navbar .logo img {
+            height: 50px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar .logo img:hover {
+            transform: scale(1.1);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 20px;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #f4f4f9;
+            text-decoration: underline;
+            transform: scale(1.05);
+        }
+
+        .button-signout {
+            background-color: #ff4d4f;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .button-signout:hover {
+            background-color: #e04344;
+            transform: scale(1.05);
+        }
+
+        /* Main Container */
+        .container {
+            width: 85%;
+            max-width: 1200px;
+            margin: 100px auto 40px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .container:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4e73df;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .select-year {
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .select-year label {
+            font-weight: bold;
+            color: #555;
+            margin-right: 15px;
+        }
+
+        .select-year select {
+            font-size: 1.1rem;
+            padding: 8px 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f4f4f4;
+            transition: all 0.3s ease;
+        }
+
+        .select-year select:hover {
+            border-color: #4e73df;
+            background-color: #e9f0ff;
+        }
+
+        .chart-container {
+            margin-bottom: 40px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+
+        .chart-container h2 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .chart-card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .chart-card:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .chart-card img {
+            max-width: 90%;
+            height: auto;
+            border-radius: 8px;
+            margin: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .footer p {
+            margin: 0;
+        }
+
+        .footer a {
+            color: #4e73df;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #1d56b5;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .select-year {
+                font-size: 1rem;
+            }
+
+            .chart-container h2 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">
+            {% load static %}
+            <a href="{% url 'home' %}">
+                <img src="{% static 'excel_app/images/LOGO PERODUA.png' %}" alt="Perodua Logo">
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'upload_excel' %}">Upload Page</a>
+            <a href="{% url 'view_data' %}">View Data</a>
+            <a href="{% url 'vendor_landscape' %}">Vendor Landscape</a>
+        </div>
+        <a href="{% url 'logout' %}" class="button-signout">Sign Out</a>
+    </div>
+
+    <div class="container">
+        <h1>Vendor Analytics Dashboard</h1>
+
+        <!-- Bar Chart -->
+        <div class="chart-container">
+            <div class="chart-card">
+                <img id="bar-chart" src="data:image/png;base64,{{ bar_chart_image }}" alt="Bar Chart">
+            </div>
+        </div>
+
+        <!-- Year Selector -->
+        <div class="select-year">
+            <label for="year">Select Year:</label>
+            <select id="year" onchange="updateYear()">
+                <option value="2019">2019</option>
+                <option value="2020">2020</option>
+                <option value="2021">2021</option>
+                <option value="2022" selected>2022</option>
+                <option value="2023">2023</option>
+            </select>
+        </div>
+
+        <!-- Pie Chart -->
+        <div class="chart-container">
+            <div class="chart-card">
+                <img id="pie-chart" src="data:image/png;base64,{{ pie_chart_image }}" alt="Pie Chart">
+            </div>
+        </div>
+
+        <!-- Line Chart -->
+        <div class="chart-container">
+            <div class="chart-card">
+                <img id="line-chart" src="data:image/png;base64,{{ line_chart_image }}" alt="Line Chart">
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; Vendor Analytics Dashboard</p>
+        </div>
+    </div>
+
+    <script>
+        // Update the year dynamically and reload charts
+        function updateYear() {
+            const selectedYear = document.getElementById("year").value;
+
+            // Fetch updated data using AJAX
+            fetch(`?year=${selectedYear}`, {
+                headers: {
+                    'x-requested-with': 'XMLHttpRequest',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Update chart images
+                    document.getElementById("bar-chart").src = "data:image/png;base64," + data.bar_chart_image;
+                    document.getElementById("pie-chart").src = "data:image/png;base64," + data.pie_chart_image;
+                    document.getElementById("line-chart").src = "data:image/png;base64," + data.line_chart_image;
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+    </script>
+</body>
+</html>

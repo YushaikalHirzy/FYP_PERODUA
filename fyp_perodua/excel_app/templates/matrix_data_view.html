@@ -1,0 +1,233 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Matrix Data</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #f0f4f8, #dff1ff);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+         /* Add this CSS to make the table scrollable */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1rem;
+            min-width: 1200px; /* Ensure the table has a minimum width */
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(90deg, #4A90E2, #00bcd4);
+            color: white;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .logo img {
+            height: 50px;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar .nav-links a:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Main Content */
+        .container {
+            margin-top: 120px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            padding: 50px 40px;
+            width: 90%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #4A90E2;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            background-color: #4A90E2;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+            background-color: #357ABD;
+        }
+
+        .btn-secondary {
+            background-color: #00bcd4;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 1rem;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4A90E2;
+            color: white;
+            font-weight: 600;
+        }
+
+        td a {
+            color: white;
+            background-color: #4A90E2;
+            padding: 6px 12px;
+            border-radius: 12px;
+            text-decoration: none;
+        }
+
+        td a:hover {
+            background-color: #357ABD;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 10px 20px;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">
+            <a href="{% url 'home' %}">
+                <img src="{% static 'excel_app/images/LOGO PERODUA.png' %}" alt="Perodua Logo">
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'upload_excel' %}">Upload Data</a>
+            <a href="{% url 'view_data' %}">View Data</a>
+            <a href="{% url 'vendor_landscape' %}">Vendor Landscape</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Vendor Matrix Data</h1>
+        <a href="{% url 'view_data' %}" class="btn btn-secondary">Back to Data Overview</a>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Vendor</th>
+                        <th>GIPV</th>
+                        <th>Cost Reduction Activity</th>
+                        <th>PPKV</th>
+                        <th>DTE</th>
+                        <th>BEEP</th>
+                        <th>TMIEP</th>
+                        <th>Trade Mission</th>
+                        <th>Lean Mgmt.</th>
+                        <th>Kaizen</th>
+                        <th>ICC</th>
+                        <th>Contract. Nego. Skill</th>
+                        <th>SSPOA</th>
+                        <th>eSPO</th>
+                        <th>VIP2</th>
+                        <th>IR4.0</th>
+                        <th>Remarks</th>
+                        <th>O-Rating</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in matrix_data %}
+                    <tr>
+                        <td>{{ data.vendor }}</td>
+                        <td>{{ data.gipv }}</td>
+                        <td>{{ data.cost_reduction_activity }}</td>
+                        <td>{{ data.ppkv }}</td>
+                        <td>{{ data.dte }}</td>
+                        <td>{{ data.beep }}</td>
+                        <td>{{ data.tmiep }}</td>
+                        <td>{{ data.trade_mission }}</td>
+                        <td>{{ data.lean_management }}</td>
+                        <td>{{ data.kaizen }}</td>
+                        <td>{{ data.icc }}</td>
+                        <td>{{ data.contract_negotiation_skill }}</td>
+                        <td>{{ data.sspoa }}</td>
+                        <td>{{ data.espo }}</td>
+                        <td>{{ data.vip2 }}</td>
+                        <td>{{ data.ir40 }}</td>
+                        <td>{{ data.remarks }}</td>
+                        <td>{{ data.o_rating }}</td>
+                        <td><a href="#" class="btn">Edit</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

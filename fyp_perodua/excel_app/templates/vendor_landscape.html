@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vendor Landscape</title>
     <style>
-        /* General body styling */
+        /* General styling */
         body {
             font-family: 'Roboto', Arial, sans-serif;
             margin: 0;
@@ -17,38 +17,79 @@
         }
 
         h2 {
+            padding-top: 100px;
             text-align: center;
-            margin-top: 20px;
+            margin: 20px 0;
             color: #444;
         }
 
-        /* Navigation Bar Styles */
+        /* Navbar Styles */
         .navbar {
+            background: linear-gradient(90deg, #4A90E2, #357ABD);
+            color: white;
+            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #4A90E2;
-            padding: 10px 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-left: 10px;
+            padding-right: 10px;
+            position: fixed;
+            top: 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: background-color 0.3s ease;
         }
 
-        .navbar .icon img {
+        .navbar:hover {
+            background: linear-gradient(90deg, #357ABD, #4A90E2);
+        }
+
+        .navbar .logo img {
             height: 50px;
-            width: auto;
+            object-fit: contain;
+            transition: transform 0.3s ease;
         }
 
-        .navbar a {
+        .navbar .logo img:hover {
+            transform: scale(1.1);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a {
             color: white;
             text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-            margin: 0 5px;
+            margin: 0 20px;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: color 0.3s ease, transform 0.3s ease;
         }
 
-        .navbar a:hover {
-            background-color: #357ABD;
+        .nav-links a:hover {
+            color: #f4f4f9;
+            text-decoration: underline;
+            transform: scale(1.05);
         }
+
+        .button-signout {
+            background-color: #ff4d4f;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .button-signout:hover {
+            background-color: #e04344;
+            transform: scale(1.05);
+        }
+        
 
         /* Table styling */
         table {
@@ -79,76 +120,88 @@
         tr:hover {
             background-color: #eef;
         }
-        
-        li {
-            cursor: pointer;
-        }
 
-        /* Vendor Grade Column Colors */
+        /* Vendor Grade Colors */
         .grade-G {
-            background-color: #a7f3a7; /* Light green */
-            color: #333; /* Text color */
+            background-color: #a7f3a7;
+            color: #333;
         }
 
         .grade-Y {
-            background-color: #ffcc66; /* Light yellow */
+            background-color: #ffcc66;
             color: #333;
         }
 
         .grade-R {
-            background-color: #e48484; /* Light red */
+            background-color: #e48484;
             color: white;
         }
 
         .grade-default {
-            background-color: #d9d9d9; /* Gray for unspecified categories */
+            background-color: #d9d9d9;
             color: #333;
         }
 
-        /* Vendor Details Background Colors */
-        #vendor-details.grade-G {
-            background-color: #85e085; /* Light green */
-            color: #333;
-        }
-
-        #vendor-details.grade-Y {
-            background-color: #ffcc66; /* Light yellow */
-            color: #333;
-        }
-
-        #vendor-details.grade-R {
-            background-color: #ff6666; /* Light red */
-            color: white;
-        }
-
-    #vendor-details.grade-default {
-        background-color: #d9d9d9; /* Gray for unspecified categories */
-        color: #333;
-    }
-
-        /* Vendor Details */
-        #vendor-details {
-            max-width: 800px;
-            margin: 30px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* Modal and Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
             display: none;
-            animation: fadeIn 0.3s ease-in-out;
         }
 
-        #vendor-details h3 {
-            margin-top: 0;
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
             color: #4A90E2;
         }
 
-        /* Vendor hover effect */
-        table ul li:hover {
-            background-color: #3cb2ec; /* Light blue to indicate selection */
-            color: #333; /* Ensure the text is visible */
-            cursor: pointer; /* Show a pointer to indicate interactivity */
-            transition: background-color 0.2s ease; /* Smooth color transition */
+        .modal-header .close-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #888;
+            background: none;
+            border: none;
+        }
+
+        .modal-body p {
+            margin: 10px 0;
+        }
+
+        /* Highlight and Pointer Effect */
+        ul li {
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        ul li:hover {
+            background-color: #4A90E2;
+            color: white;
         }
 
         /* Responsive adjustments */
@@ -166,27 +219,29 @@
             }
         }
 
-        /* Animations */
+        /* Animation */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+    
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
+    <!-- Navbar -->
     <div class="navbar">
-        <div class="icon">
+        <div class="logo">
+            {% load static %}
             <a href="{% url 'home' %}">
-                <img src="{% static 'excel_app/images/LOGO PERODUA.png' %}" alt="Logo">
+                <img src="{% static 'excel_app/images/LOGO PERODUA.png' %}" alt="Perodua Logo">
             </a>
         </div>
-        <div>
-            <a href="{% url 'upload_excel' %}">Upload Page</a>
+        <div class="nav-links">
+            <a href="{% url 'upload_excel' %}">Upload Data</a>
             <a href="{% url 'view_data' %}">View Data</a>
             <a href="{% url 'vendor_landscape' %}">Vendor Landscape</a>
-            <a href="{% url 'logout' %}" class="button">Sign Out</a>
         </div>
+        <a href="{% url 'logout' %}" class="button-signout">Sign Out</a>
     </div>
 
     <h2>Vendor Landscape</h2>
@@ -209,59 +264,55 @@
                 {% for grade, spends in grid.items %}
                 <td class="{% if grade == 'Category C' %}grade-R{% elif grade == 'Category B' %}grade-Y{% elif grade == 'Category A' %}grade-G{% else %}grade-default{% endif %}">
                     {% if spend_label in spends %}
-                        <ul>
-                            {% for vendor_data in spends|dict_get:spend_label %}
-                            <li onclick="showVendorDetails('{{ vendor_data.vendor }}', '{{ vendor_data.latest_grades }}', '{{ vendor_data.spend_value }}', '{{ grade }}')">
-                                {{ vendor_data.vendor }}
-                            </li>
-                            {% endfor %}
-                        </ul>
+                    <ul>
+                        {% for vendor_data in spends|dict_get:spend_label %}
+                        <li onclick="showVendorDetails('{{ vendor_data.vendor }}', '{{ vendor_data.latest_grades }}', '{{ vendor_data.spend_value }}', '{{ grade }}')">
+                            {{ vendor_data.vendor }}
+                        </li>
+                        {% endfor %}
+                    </ul>
                     {% else %}
-                        -
+                    -
                     {% endif %}
-                </td>                
-                
+                </td>
                 {% endfor %}
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    
 
-        <!-- Vendor Details Section -->
-    <div id="vendor-details">
-        <h3>Vendor Details</h3>
-        <p><strong>Vendor Name:</strong> <span id="vendor-name"></span></p>
-        <p><strong>Grades (Last 3 Years):</strong> <span id="vendor-grade"></span></p>
-        <p><strong>Spend Value:</strong> <span id="vendor-spend"></span></p>
+    <div id="overlay" class="overlay"></div>
+    <div id="vendor-modal" class="modal">
+        <div class="modal-header">
+            <h3>Vendor Details</h3>
+            <button class="close-btn" onclick="closeVendorModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p><strong>Vendor Name:</strong> <span id="modal-vendor-name"></span></p>
+            <p><strong>Grades (Last 3 Years):</strong> <span id="modal-vendor-grade"></span></p>
+            <p><strong>Spend Value:</strong> <span id="modal-vendor-spend"></span></p>
+        </div>
     </div>
 
     <script>
-        // Function to update and show vendor details
-        function showVendorDetails(vendorName, grades, spendValue, gradeColumn) {
-            document.getElementById('vendor-name').innerText = vendorName;
-            document.getElementById('vendor-grade').innerText = grades;
-            document.getElementById('vendor-spend').innerText = spendValue;
+        const overlay = document.getElementById('overlay');
+        const modal = document.getElementById('vendor-modal');
 
-            const vendorDetailsSection = document.getElementById('vendor-details');
+        function showVendorDetails(vendorName, grades, spendValue) {
+            document.getElementById('modal-vendor-name').innerText = vendorName;
+            document.getElementById('modal-vendor-grade').innerText = grades;
+            document.getElementById('modal-vendor-spend').innerText = spendValue;
 
-            // Assign background color based on column
-            vendorDetailsSection.className = ''; // Reset classes
-            if (gradeColumn === 'Category C') {
-                vendorDetailsSection.classList.add('grade-R');
-            } else if (gradeColumn === 'Category B') {
-                vendorDetailsSection.classList.add('grade-Y');
-            } else if (gradeColumn === 'Category A') {
-                vendorDetailsSection.classList.add('grade-G');
-            } else {
-                vendorDetailsSection.classList.add('grade-default');
-            }
-
-            // Display the section and scroll into view
-            vendorDetailsSection.style.display = 'block';
-            vendorDetailsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            modal.style.display = 'block';
+            overlay.style.display = 'block';
         }
-    </script>
 
+        function closeVendorModal() {
+            modal.style.display = 'none';
+            overlay.style.display = 'none';
+        }
+
+        overlay.addEventListener('click', closeVendorModal);
+    </script>
 </body>
 </html>

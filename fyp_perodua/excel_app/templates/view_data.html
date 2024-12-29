@@ -1,334 +1,178 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Uploaded</title>
+    <title>Vendor Data Overview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9; /* Light gray background */
-            color: #333;
+        /* General Reset */
+        * {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
 
-        h1, h3 {
+        body {
+            background: linear-gradient(to bottom, #f0f4f8, #dff1ff);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
             text-align: center;
-            color: #4A90E2; /* Primary color */
+            overflow-x: hidden;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse; /* Remove space between borders */
-            margin-top: 20px;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left; /* Align text to the left */
-            border-bottom: 1px solid #ddd; /* Add a light border for separation */
-        }
-
-        th {
-            background-color: #4A90E2; /* Header background color */
-            color: white; /* Header text color */
-        }
-
-        tr:hover {
-            background-color: #f1f1f1; /* Highlight row on hover */
-        }
-
+        /* Main Container */
         .container {
-            max-width: 1200px; /* Limit width for larger screens */
-            margin: 0 auto; /* Center the table */
-            background: white; /* White background for the table */
-            border-radius: 8px; /* Rounded corners */
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
-            overflow: hidden; /* Prevent content overflow */
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            padding: 50px 40px;
+            max-width: 750px;
+            width: 90%;
+            margin-top: 120px;
         }
 
-        button {
-            padding: 10px 20px;
-            margin: 5px;
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #4A90E2;
+            margin-bottom: 25px;
+            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Button Styling */
+        .button {
+            display: inline-block;
+            margin: 15px;
+            padding: 14px 25px;
+            font-size: 1rem;
+            font-weight: 500;
             color: white;
-            background-color: #4A90E2;
+            background: linear-gradient(90deg, #4A90E2, #00bcd4);
             border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            border-radius: 30px;
+            text-decoration: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        button:hover {
-            background-color: #357ABD;
+        .button:hover {
+            background: linear-gradient(90deg, #357ABD, #00a3c4);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
         }
 
-        /* Conditional styles for overall columns */
-        .green {
-            background-color: #56db5a; /* Light green */
+        .button i {
+            margin-right: 10px;
         }
 
-        .yellow {
-            background-color: #fff386; /* Light yellow */
-        }
-
-        .red {
-            background-color: #ff6739; /* Light red */
-        }
-
-        .section-buttons {
-            padding-top: 60px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        /* Navigation Bar Styles */
+        /* Navbar Styles */
         .navbar {
+            background: linear-gradient(90deg, #4A90E2, #00bcd4);
+            color: white;
             width: 100%;
-            background-color: #4A90E2; /* Primary color */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .logo img {
+            height: 50px;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar .logo img:hover {
+            transform: scale(1.1);
+        }
+
+        .nav-links {
             display: flex;
             align-items: center;
-            justify-content: space-between; /* Space between logo and links */
-            padding: 10px 20px;
-            position: fixed; /* Ensure the navbar stays at the top while scrolling */
-            top: 0;
-            z-index: 1000; /* Ensure the navbar appears on top of other content */
         }
 
-        .navbar .icon {
-            margin-right: 15px; /* Space between icon and nav links */
-            margin-top: 10px;
-            margin-left: 10px;
-        }
-
-        .navbar .icon img {
-            height: 80%; /* Scale the image height relative to navbar height */
-            max-width: 70px;
-            object-fit: contain; /* Ensures the image maintains its aspect ratio */
-        }
-
-        .navbar .nav-links {
-            display: flex;
-            justify-content: center;
-            flex-grow: 1; /* Allow the links to grow and center themselves */
-        }
-
-        .navbar a {
+        .nav-links a {
             color: white;
             text-decoration: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-            margin: 0 10px; /* Space between links */
+            margin: 0 15px;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: color 0.3s ease, transform 0.3s ease;
         }
 
-        .navbar a:hover {
-            background-color: #357ABD; /* Darker shade for hover */
-        }
-        
-        body {
-            padding-top: 60px; /* Adjust based on navbar height */
+        .nav-links a:hover {
+            color: #f8f9fa;
+            transform: translateY(-3px);
         }
 
+        .button-signout {
+            background-color: #ff4d4f;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(255, 77, 79, 0.5);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .button-signout:hover {
+            background-color: #e04344;
+            transform: scale(1.1);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        .footer p {
+            font-weight: 400;
+        }
     </style>
 </head>
 <body>
-<!-- Navigation Bar -->
+
+    <!-- Navbar -->
     <div class="navbar">
-        {% load static %}
-        <div class="icon">
-            <!-- Make the logo a clickable link to the home page -->
+        <div class="logo">
+            {% load static %}
             <a href="{% url 'home' %}">
-                <img src="{% static 'excel_app/images/LOGO PERODUA.png' %}" alt="Logo">
+                <img src="{% static 'excel_app/images/LOGO PERODUA.png' %}" alt="Perodua Logo">
             </a>
         </div>
         <div class="nav-links">
-            <a href="{% url 'upload_excel' %}">Upload Page</a>
+            <a href="{% url 'upload_excel' %}">Upload Data</a>
             <a href="{% url 'view_data' %}">View Data</a>
             <a href="{% url 'vendor_landscape' %}">Vendor Landscape</a>
         </div>
-        <div>
-            <a href="{% url 'logout' %}" class="button">Sign Out</a>
-        </div>
+        <a href="{% url 'logout' %}" class="button-signout">Sign Out</a>
     </div>
 
-
-    <!-- Section Buttons -->
-    <div class="section-buttons">
-        <button onclick="scrollToSection('grade-section')">Vendor Grade Data</button>
-        <button onclick="scrollToSection('spend-section')">Vendor Spend Data</button>
-        <button onclick="scrollToSection('matrix-section')">Vendor Matrix Data</button>
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Vendor Data Overview</h1>
+        <a href="{% url 'grade_data_view' %}" class="button"><i class="fas fa-table"></i> Vendor Grade Data</a>
+        <a href="{% url 'spend_data_view' %}" class="button"><i class="fas fa-dollar-sign"></i> Vendor Spend Data</a>
+        <a href="{% url 'matrix_data_view' %}" class="button"><i class="fas fa-cogs"></i> Vendor Matrix Data</a>
     </div>
 
-    <!-- Container -->
-    <div class="container mt-5">
-        <h1>Vendor Data</h1>
-        
-        <!-- Vendor Grade Data Section -->
-        <div id="grade-section">
-            <h3>Vendor Grade Data</h3>
-            <a href="{% url 'grade_data_add' %}" class="btn btn-success mb-3">Add New Vendor Grade</a>
-            <table>
-                <thead>
-                    <tr>
-                        <th>NO</th>
-                        <th>Vendor</th>
-                        <th>Short Name</th>
-                        <th>Vendor Code</th>
-                        <th>Overall 2018</th>
-                        <th>Overall 2019</th>
-                        <th>Overall 2020</th>
-                        <th>Overall 2021</th>
-                        <th>Overall 2022</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for data in grade_data %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ data.vendor }}</td>
-                        <td>{{ data.short_name }}</td>
-                        <td>{{ data.vendor_code }}</td>
-                        <td class="{% if data.overall_2018 == 'G' %}green{% elif data.overall_2018 == 'Y' %}yellow{% elif data.overall_2018 == 'R' %}red{% endif %}">
-                            {{ data.overall_2018 }}
-                        </td>
-                        <td class="{% if data.overall_2019 == 'G' %}green{% elif data.overall_2019 == 'Y' %}yellow{% elif data.overall_2019 == 'R' %}red{% endif %}">
-                            {{ data.overall_2019 }}
-                        </td>
-                        <td class="{% if data.overall_2020 == 'G' %}green{% elif data.overall_2020 == 'Y' %}yellow{% elif data.overall_2020 == 'R' %}red{% endif %}">
-                            {{ data.overall_2020 }}
-                        </td>
-                        <td class="{% if data.overall_2021 == 'G' %}green{% elif data.overall_2021 == 'Y' %}yellow{% elif data.overall_2021 == 'R' %}red{% endif %}">
-                            {{ data.overall_2021 }}
-                        </td>
-                        <td class="{% if data.overall_2022 == 'G' %}green{% elif data.overall_2022 == 'Y' %}yellow{% elif data.overall_2022 == 'R' %}red{% endif %}">
-                            {{ data.overall_2022 }}
-                        </td>
-                        <td>
-                            <a href="{% url 'grade_data_edit' data.pk %}" class="btn btn-primary btn-sm">Edit</a>
-                            <a href="{% url 'grade_data_delete' data.pk %}" class="btn btn-danger btn-sm">Delete</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <form method="POST" action="{% url 'delete_all_grade_data' %}">
-                {% csrf_token %}
-                <button type="submit" onclick="return confirm('Are you sure you want to delete all vendor grade data?')">Delete All Vendor Grade Data</button>
-            </form>
-        </div>
-
-        <!-- Vendor Spend Data Section -->
-        <div id="spend-section">
-            <h3>Vendor Spend Data</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Vendor</th>
-                        <th>Vendor Code</th>
-                        <th>Grand Total 2019</th>
-                        <th>Grand Total 2020</th>
-                        <th>Grand Total 2021</th>
-                        <th>Grand Total 2022</th>
-                        <th>Grand Total 2023</th>
-                        <th>Total (5 Years)</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for data in spend_data %}
-                    <tr>
-                        <td>{{ data.vendor }}</td>
-                        <td>{{ data.vendor_code }}</td>
-                        <td>RM{{ data.grand_total_2019 }}</td>
-                        <td>RM{{ data.grand_total_2020 }}</td>
-                        <td>RM{{ data.grand_total_2021 }}</td>
-                        <td>RM{{ data.grand_total_2022 }}</td>
-                        <td>RM{{ data.grand_total_2023 }}</td>
-                        <td>RM{{ data.overall_5_years }}</td>
-                        <td>
-                            <a href="{% url 'spend_data_edit' data.pk %}" class="btn btn-primary btn-sm">Edit</a>
-                            <a href="{% url 'spend_data_delete' data.pk %}" class="btn btn-danger btn-sm">Delete</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <form method="POST" action="{% url 'delete_all_spend_data' %}">
-                {% csrf_token %}
-                <button type="submit" onclick="return confirm('Are you sure you want to delete all vendor spend data?')">Delete All Vendor Spend Data</button>
-            </form>
-        </div>
-
-        <!-- Vendor Matrix Data Section -->
-        <div id="matrix-section">
-            <h3>Vendor Matrix Data</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Vendor</th>
-                        <th>GIPV</th>
-                        <th>Cost Reduction Activity</th>
-                        <th>PPKV</th>
-                        <th>DTE</th>
-                        <th>BEEP</th>
-                        <th>TMIEP</th>
-                        <th>Trade Mission</th>
-                        <th>Lean Mgmt.</th>
-                        <th>Kaizen</th>
-                        <th>ICC</th>
-                        <th>Contract. Nego. Skill</th>
-                        <th>SSPOA</th>
-                        <th>eSPO</th>
-                        <th>VIP2</th>
-                        <th>IR4.0</th>
-                        <th>Remarks</th>
-                        <th>O-Rating</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for data in matrix_data %}
-                    <tr>
-                        <td>{{ data.vendor }}</td>
-                        <td>{{ data.gipv }}</td>
-                        <td>{{ data.cost_reduction_activity }}</td>
-                        <td>{{ data.ppkv }}</td>
-                        <td>{{ data.dte }}</td>
-                        <td>{{ data.beep }}</td>
-                        <td>{{ data.tmiep }}</td>
-                        <td>{{ data.trade_mission }}</td>
-                        <td>{{ data.lean_management }}</td>
-                        <td>{{ data.kaizen }}</td>
-                        <td>{{ data.icc }}</td>
-                        <td>{{ data.contract_negotiation_skill }}</td>
-                        <td>{{ data.sspoa }}</td>
-                        <td>{{ data.espo }}</td>
-                        <td>{{ data.vip2 }}</td>
-                        <td>{{ data.ir40 }}</td>
-                        <td>{{ data.remarks }}</td>
-                        <td>{{ data.o_rating }}</td>
-                        <td>
-                            <a href="{% url 'matrix_data_edit' data.pk %}" class="btn btn-primary btn-sm">Edit</a>
-                            <a href="{% url 'matrix_data_delete' data.pk %}" class="btn btn-danger btn-sm">Delete</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <form method="POST" action="{% url 'delete_all_matrix_data' %}">
-                {% csrf_token %}
-                <button type="submit" onclick="return confirm('Are you sure you want to delete all vendor matrix data?')">Delete All Vendor Matrix Data</button>
-            </form>
-        </div>
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2024 Perodua. All Rights Reserved.</p>
     </div>
 
-    <script>
-        function scrollToSection(sectionId) {
-            const section = document.getElementById(sectionId);
-            section.scrollIntoView({ behavior: 'smooth' });
-        }
-    </script>
 </body>
 </html>
