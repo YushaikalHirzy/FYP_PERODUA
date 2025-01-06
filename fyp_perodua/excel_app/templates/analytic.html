@@ -15,26 +15,21 @@
 
         /* Navbar Styles */
         .navbar {
-            background: linear-gradient(90deg, #4A90E2, #357ABD);
+            background: linear-gradient(90deg, #4A90E2, #00bcd4);
             color: white;
             width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
+            padding: 15px 30px;
             position: fixed;
             top: 0;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             z-index: 1000;
-        }
-
-        .navbar:hover {
-            background: linear-gradient(90deg, #357ABD, #4A90E2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .navbar .logo img {
             height: 50px;
-            object-fit: contain;
             transition: transform 0.3s ease;
         }
 
@@ -50,30 +45,31 @@
         .nav-links a {
             color: white;
             text-decoration: none;
-            margin: 0 20px;
+            margin: 0 15px;
             font-weight: 500;
-            font-size: 1.1rem;
+            font-size: 1rem;
             transition: color 0.3s ease, transform 0.3s ease;
         }
 
         .nav-links a:hover {
-            color: #f4f4f9;
-            text-decoration: underline;
-            transform: scale(1.05);
+            color: #f8f9fa;
+            transform: translateY(-3px);
         }
 
         .button-signout {
             background-color: #ff4d4f;
             padding: 10px 20px;
-            border-radius: 5px;
+            border-radius: 20px;
             color: white;
-            font-weight: 500;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(255, 77, 79, 0.5);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            text-decoration: none;
         }
 
         .button-signout:hover {
             background-color: #e04344;
-            transform: scale(1.05);
+            transform: scale(1.1);
         }
 
         /* Main Container */
@@ -142,11 +138,16 @@
         }
 
         .chart-card {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            width: 150px;
+            height: 150px;
+            display: inline-block;
+            margin: 20px;
+            cursor: pointer;
             transition: all 0.3s ease;
+            overflow: hidden; /* Prevent overflowing content */
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            position: relative;
         }
 
         .chart-card:hover {
@@ -154,10 +155,39 @@
         }
 
         .chart-card img {
-            max-width: 90%;
-            height: auto;
-            border-radius: 8px;
-            margin: 20px;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .chart-card.expanded {
+            width: 800px;
+            height: 800px;
+            z-index: 10;
+            position: relative;
+        }
+
+        /* Close button style */
+        .chart-card .close-btn {
+            display: none; /* Hidden by default */
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            text-align: center;
+            line-height: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 20;
+        }
+
+        /* Show close button when expanded */
+        .chart-card.expanded .close-btn {
+            display: block;
         }
 
         .footer {
@@ -224,7 +254,7 @@
             </a>
         </div>
         <div class="nav-links">
-            <a href="{% url 'upload_excel' %}">Upload Page</a>
+            <a href="{% url 'upload_excel' %}">Upload Data</a>
             <a href="{% url 'view_data' %}">View Data</a>
             <a href="{% url 'vendor_landscape' %}">Vendor Landscape</a>
         </div>
@@ -234,29 +264,30 @@
     <div class="container">
         <h1>Vendor Analytics Dashboard</h1>
 
+         <!-- Pie Chart -->
+         <div class="chart-container">
+            <!-- Year Selector -->
+            <div class="select-year">
+                <label for="year">Select Year:</label>
+                <select id="year" onchange="updateYear()">
+                    <option value="2019">2019</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022" selected>2022</option>
+                    <option value="2023">2023</option>
+                </select>
+            </div>
+            <div class="chart-card">
+                <img id="pie-chart" src="data:image/png;base64,{{ pie_chart_image }}" alt="Pie Chart">
+                <button class="close-btn">X</button>
+            </div>
+        </div>
+
         <!-- Bar Chart -->
         <div class="chart-container">
             <div class="chart-card">
                 <img id="bar-chart" src="data:image/png;base64,{{ bar_chart_image }}" alt="Bar Chart">
-            </div>
-        </div>
-
-        <!-- Year Selector -->
-        <div class="select-year">
-            <label for="year">Select Year:</label>
-            <select id="year" onchange="updateYear()">
-                <option value="2019">2019</option>
-                <option value="2020">2020</option>
-                <option value="2021">2021</option>
-                <option value="2022" selected>2022</option>
-                <option value="2023">2023</option>
-            </select>
-        </div>
-
-        <!-- Pie Chart -->
-        <div class="chart-container">
-            <div class="chart-card">
-                <img id="pie-chart" src="data:image/png;base64,{{ pie_chart_image }}" alt="Pie Chart">
+                <button class="close-btn">X</button>
             </div>
         </div>
 
@@ -264,6 +295,7 @@
         <div class="chart-container">
             <div class="chart-card">
                 <img id="line-chart" src="data:image/png;base64,{{ line_chart_image }}" alt="Line Chart">
+                <button class="close-btn">X</button>
             </div>
         </div>
 
@@ -292,6 +324,30 @@
                 })
                 .catch(error => console.error('Error fetching data:', error));
         }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const charts = document.querySelectorAll(".chart-card");
+
+            charts.forEach(chart => {
+                chart.addEventListener("click", () => {
+                    // Check if the chart is already expanded
+                    if (chart.classList.contains("expanded")) return;
+
+                    // Remove 'expanded' class from all charts
+                    charts.forEach(c => c.classList.remove("expanded"));
+                    
+                    // Add 'expanded' class to the clicked chart
+                    chart.classList.add("expanded");
+                });
+
+                // Handle the close button
+                const closeButton = chart.querySelector(".close-btn");
+                closeButton.addEventListener("click", (event) => {
+                    event.stopPropagation(); // Prevent triggering the parent click event
+                    chart.classList.remove("expanded");
+                });
+            });
+        });
     </script>
 </body>
 </html>

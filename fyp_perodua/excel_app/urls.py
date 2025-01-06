@@ -1,8 +1,9 @@
 from django.urls import path
-from .views import grade_data_view, matrix_data_view, spend_data_view, upload_excel, home_view, view_data, login_view, vendor_landscape, register_view, logout_view,delete_all_vendor_grade_data,delete_all_vendor_spend_data,vendor_analytics
+from .views import grade_data_download, spend_data_download,matrix_data_download, grade_data_view, matrix_data_view, spend_data_view, upload_excel, home_view, view_data, login_view, vendor_landscape, register_view, logout_view,delete_all_vendor_grade_data,delete_all_vendor_spend_data, delete_all_vendor_matrix_data, vendor_analytics
 from .views import (
     VendorGradeDataCreateView, VendorGradeDataUpdateView, VendorGradeDataDeleteView,
-    VendorSpendDataCreateView, VendorSpendDataUpdateView, VendorSpendDataDeleteView
+    VendorSpendDataCreateView, VendorSpendDataUpdateView, VendorSpendDataDeleteView,
+    VendorMatrixDataCreateView, VendorMatrixDataUpdateView, VendorMatrixDataDeleteView
 )
 
 urlpatterns = [
@@ -23,12 +24,23 @@ urlpatterns = [
     path('vendor-grade/add/', VendorGradeDataCreateView.as_view(), name='grade_data_add'),
     path('vendor-grade/<int:pk>/edit/', VendorGradeDataUpdateView.as_view(), name='grade_data_edit'),
     path('vendor-grade/<int:pk>/delete/', VendorGradeDataDeleteView.as_view(), name='grade_data_delete'),
+    path('grade-data-download/', grade_data_download, name='grade_data_download'),
 
     # Vendor Spend Data URLs
     path('vendor-spend/add/', VendorSpendDataCreateView.as_view(), name='spend_data_add'),
     path('vendor-spend/<int:pk>/edit/', VendorSpendDataUpdateView.as_view(), name='spend_data_edit'),
     path('vendor-spend/<int:pk>/delete/', VendorSpendDataDeleteView.as_view(), name='spend_data_delete'),
+    path('spend-data-download/', spend_data_download, name='spend_data_download'),
+
+    # Vendor Matrix Data URLs
+    path('vendor-matrix/add/', VendorMatrixDataCreateView.as_view(), name='matrix_data_add'),
+    path('vendor-matrix/<int:pk>/edit/', VendorMatrixDataUpdateView.as_view(), name='matrix_data_edit'),
+    path('vendor-matrix/<int:pk>/delete/', VendorMatrixDataDeleteView.as_view(), name='matrix_data_delete'),
+    path('matrix-data-download/', matrix_data_download, name='matrix_data_download'),
 
     path('delete-all-grade-data/', delete_all_vendor_grade_data, name='delete_all_grade_data'),
     path('delete-all-spend-data/', delete_all_vendor_spend_data, name='delete_all_spend_data'),
+    path('delete-all-matrix-data/', delete_all_vendor_matrix_data, name='delete_all_matrix_data'),
+
+    
 ]

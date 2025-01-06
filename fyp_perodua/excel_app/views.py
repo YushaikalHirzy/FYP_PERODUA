@@ -1,41 +1,29 @@
 from collections import defaultdict
 import locale
-from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib import messages
-from django.contrib.auth import logout
-from django.shortcuts import redirect
 import pandas as pd
-from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from .models import VendorGradeData,VendorSpendData, VendorMatrixData
-from .forms import VendorGradeDataForm, VendorSpendDataForm, VendorMatrixDataForm
-from django.http import HttpResponse, JsonResponse
+import base64
+
+from io import BytesIO
 from sklearn.preprocessing import LabelEncoder
-import matplotlib.pyplot as plt
-from io import BytesIO
-import base64
-from django.http import HttpResponse
-from django.template import loader
-
-from django.http import JsonResponse
-from django.shortcuts import render
-from io import BytesIO
-import base64
-import matplotlib.pyplot as plt
-
-from django.http import JsonResponse
-from django.shortcuts import render
-from io import BytesIO
-import base64
-import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('Agg')  # Use the Agg backend for non-GUI image rendering
 import matplotlib.pyplot as plt
+
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.template import loader
+from django.template.loader import get_template
+
+from xhtml2pdf import pisa
+
+from .models import VendorGradeData, VendorSpendData, VendorMatrixData
+from .forms import VendorGradeDataForm, VendorSpendDataForm, VendorMatrixDataForm
+
 
 
 def vendor_analytics(request):
@@ -66,7 +54,7 @@ def vendor_analytics(request):
 
     plt.xlabel('Vendors')
     plt.ylabel('Spend Value (RM)')
-    plt.title(f'Top 10 Vendors by Spend Value ({selected_year} Total)')
+    plt.title(f'Top 10 Vendors by Spend Value')
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
     bar_chart_buffer = BytesIO()
@@ -181,6 +169,26 @@ class VendorSpendDataDeleteView(DeleteView):
     template_name = 'vendor_spend_data_confirm_delete.html'
     success_url = reverse_lazy('view_data')
 
+# Create View for Vendor Matrix Data
+class VendorMatrixDataCreateView(CreateView):
+    model = VendorMatrixData
+    form_class = VendorMatrixDataForm
+    template_name = 'vendor_matrix_data_form.html'  # Specify your template here
+    success_url = reverse_lazy('view_data')  # Redirect to the list view after success
+
+# Update View for Vendor Matrix Data
+class VendorMatrixDataUpdateView(UpdateView):
+    model = VendorMatrixData
+    form_class = VendorMatrixDataForm
+    template_name = 'vendor_matrix_data_form.html'  # Use the same form template as create
+    success_url = reverse_lazy('view_data')
+
+# Delete View for Vendor Matrix Data
+class VendorMatrixDataDeleteView(DeleteView):
+    model = VendorMatrixData
+    template_name = 'vendor_matrix_data_confirm_delete.html'  # Confirmation template
+    success_url = reverse_lazy('view_data')
+
 # Delete all VendorGradeData
 def delete_all_vendor_grade_data(request):
     if request.method == 'POST':
@@ -194,6 +202,13 @@ def delete_all_vendor_spend_data(request):
         VendorSpendData.objects.all().delete()  # Deletes all entries
         messages.success(request, "All Vendor Spend Data has been deleted.")
         return redirect('spend_data_view')  # Redirect back to the data view page
+    
+# Delete all VendorMatrixData
+def delete_all_vendor_matrix_data(request):
+    if request.method == 'POST':
+        VendorMatrixData.objects.all().delete()  # Deletes all entries
+        messages.success(request, "All Vendor Matrix Data has been deleted.")
+        return redirect('matrix_data_view')  # Redirect back to the data view page
     
 def matrix_data_edit(request, pk):
     matrix_data = get_object_or_404(VendorMatrixData, pk=pk)
@@ -287,59 +302,117 @@ def upload_excel(request):
                 )
 
         if matrix_file:
-            # Process Vendor Matrix Data File
-            matrix_df = pd.read_excel(matrix_file, header=[3, 4, 5])
-            matrix_df.columns = [' '.join(map(str, col)).replace('\n', ' ').strip() for col in matrix_df.columns]
+           # Process Vendor Matrix Data File
+            matrix_df = pd.read_excel(matrix_file, header=None)
 
-            vendor_names = matrix_df.iloc[4:, 0].reset_index(drop=True)
+            # Flatten column names and clean them
+            if isinstance(matrix_df.columns, pd.MultiIndex):
+                # If columns are a MultiIndex, flatten them
+                matrix_df.columns = [' '.join(map(str, col)).replace('\n', ' ').strip() for col in matrix_df.columns]
+            else:
+                # If columns are single-level, just clean them
+                matrix_df.columns = [str(col).replace('\n', ' ').strip() for col in matrix_df.columns]
 
-            program_values = {
-                matrix_df.columns[col]: matrix_df.iloc[6:, col].reset_index(drop=True).dropna().tolist()
-                for col in range(10, 25)
-            }
+            # Debugging output
+            print("Column names:", matrix_df.columns)
+            print("Shape of the DataFrame:", matrix_df.shape)
+            print("First 5 rows:\n", matrix_df.head())
+            print("Last 5 rows:\n", matrix_df.tail())
+            print("Missing values in each column:\n", matrix_df.isnull().sum())
+            print("Data types of each column:\n", matrix_df.dtypes)
 
-            remarks_values = matrix_df.iloc[5:, 25].reset_index(drop=True).dropna().tolist()
-            ongoing_project_values = matrix_df.iloc[5:, 27].reset_index(drop=True).dropna().tolist()
-            status_values = matrix_df.iloc[5:, 28].reset_index(drop=True).dropna().tolist()
+            # Vendor names start from B8 (i.e., row index 7) and go below
+            vendor_names_start_row = 7
+            vendor_names = matrix_df.iloc[vendor_names_start_row:, 1].reset_index(drop=True)
 
+            # Extract program values from columns K8 to Y8 and below (i.e., columns 10 to 24)
+            gipv_values = matrix_df.iloc[vendor_names_start_row:, 10].reset_index(drop=True)
+            cost_reduction_activity_values = matrix_df.iloc[vendor_names_start_row:, 11].reset_index(drop=True)
+            ppkv_values = matrix_df.iloc[vendor_names_start_row:, 12].reset_index(drop=True)
+            dte_values = matrix_df.iloc[vendor_names_start_row:, 13].reset_index(drop=True)
+            beep_values = matrix_df.iloc[vendor_names_start_row:, 14].reset_index(drop=True)
+            tmiep_values = matrix_df.iloc[vendor_names_start_row:, 15].reset_index(drop=True)
+            trade_mission_values = matrix_df.iloc[vendor_names_start_row:, 16].reset_index(drop=True)
+            lean_mgmt_values = matrix_df.iloc[vendor_names_start_row:, 17].reset_index(drop=True)
+            kaizen_values = matrix_df.iloc[vendor_names_start_row:, 18].reset_index(drop=True)
+            icc_values = matrix_df.iloc[vendor_names_start_row:, 19].reset_index(drop=True)
+            contract_nego_skill_values = matrix_df.iloc[vendor_names_start_row:, 20].reset_index(drop=True)
+            sspoa_values = matrix_df.iloc[vendor_names_start_row:, 21].reset_index(drop=True)
+            espo_values = matrix_df.iloc[vendor_names_start_row:, 22].reset_index(drop=True)
+            vip2_values = matrix_df.iloc[vendor_names_start_row:, 23].reset_index(drop=True)
+            ir4_values = matrix_df.iloc[vendor_names_start_row:, 24].reset_index(drop=True)
+
+            # Extract Remarks from column Z8 and below (i.e., column 25)
+            remarks_values = matrix_df.iloc[vendor_names_start_row:, 25].reset_index(drop=True)
+
+            # Extract Ongoing Project from column AB8 and below (i.e., column 27)
+            ongoing_project_values = matrix_df.iloc[vendor_names_start_row:, 27].reset_index(drop=True)
+
+            # Extract Status from column AC8 and below (i.e., column 28)
+            status_values = matrix_df.iloc[vendor_names_start_row:, 28].reset_index(drop=True)
+
+            # Debugging: Print extracted data
+            print("Vendor Names:\n", vendor_names)
+            print("Remarks Values:\n", remarks_values)
+            print("Ongoing Project Values:\n", ongoing_project_values)
+            print("Status Values:\n", status_values)
+
+            # Create vendor data objects
             vendor_data = []
             for index, vendor_name in enumerate(vendor_names):
                 if pd.notna(vendor_name):
                     current_vendor = vendor_name
-                    program_data = {header: program_values[header][index] if index < len(program_values[header]) else None for header in program_values.keys()}
-
                     additional_details = {
-                        'remarks': remarks_values[index] if index < len(remarks_values) else None,
-                        'ongoing_project': ongoing_project_values[index] if index < len(ongoing_project_values) else None,
-                        'status': status_values[index] if index < len(status_values) else None,
+                        'gipv':gipv_values.iloc[index] if index < len(gipv_values) else None,
+                        'cost_reduction_activity': cost_reduction_activity_values.iloc[index] if index < len(cost_reduction_activity_values) else None,
+                        'ppkv': ppkv_values.iloc[index] if index < len(ppkv_values) else None,
+                        'dte': dte_values.iloc[index] if index < len(dte_values) else None,
+                        'beep': beep_values.iloc[index] if index < len(beep_values) else None,
+                        'tmiep': tmiep_values.iloc[index] if index < len(tmiep_values) else None,
+                        'trade_mission': trade_mission_values.iloc[index] if index < len(trade_mission_values) else None,
+                        'lean_mgmt': lean_mgmt_values.iloc[index] if index < len(lean_mgmt_values) else None,
+                        'kaizen': kaizen_values.iloc[index] if index < len(kaizen_values) else None,
+                        'icc': icc_values.iloc[index] if index < len(icc_values) else None,
+                        'contract_nego_skill': contract_nego_skill_values.iloc[index] if index < len(contract_nego_skill_values) else None,
+                        'sspoa': sspoa_values.iloc[index] if index < len(sspoa_values) else None,
+                        'espo': espo_values.iloc[index] if index < len(espo_values) else None,
+                        'vip2': vip2_values.iloc[index] if index < len(vip2_values) else None,
+                        'ir4': ir4_values.iloc[index] if index < len(ir4_values) else None,
+                        'remarks': remarks_values.iloc[index] if index < len(remarks_values) else None,
+                        'ongoing_project': ongoing_project_values.iloc[index] if index < len(ongoing_project_values) else None,
+                        'status': status_values.iloc[index] if index < len(status_values) else None,
                     }
 
-                    vendor_data.append({'Vendor': current_vendor, **program_data, **additional_details})
+                    vendor_data.append({'Vendor': current_vendor,**additional_details})
 
+            # Save vendor data to the database
             for data in vendor_data:
                 VendorMatrixData.objects.create(
                     vendor=data.get('Vendor'),
-                    gipv=data.get('GIPV', None),
-                    cost_reduction_activity=data.get('Cost Reduction Activity', None),
-                    ppkv=data.get('PPKV', None),
-                    dte=data.get('DTE', None),
-                    beep=data.get('BEEP', None),
-                    tmiep=data.get('TMIEP', None),
-                    trade_mission=data.get('Trade Mission', None),
-                    lean_mgmt=data.get('Lean Mgmt.', None),
-                    kaizen=data.get('Kaizen', None),
-                    icc=data.get('ICC', None),
-                    contract_nego_skill=data.get('Contract. Nego. Skill', None),
-                    sspoa=data.get('SSPOA', None),
-                    espo=data.get('eSPO', None),
-                    vip2=data.get('VIP2', None),
-                    ir4=data.get('IR4.0', None),
+                    gipv=data.get('gipv', None),
+                    cost_reduction_activity=data.get('cost_reduction_activity', None),
+                    ppkv=data.get('ppkv', None),
+                    dte=data.get('dte', None),
+                    beep=data.get('beep', None),
+                    tmiep=data.get('tmiep', None),
+                    trade_mission=data.get('trade_mission', None),
+                    lean_mgmt=data.get('lean_mgmt', None),
+                    kaizen=data.get('kaizen', None),
+                    icc=data.get('icc', None),
+                    contract_nego_skill=data.get('contract_nego_skill', None),
+                    sspoa=data.get('sspoa', None),
+                    espo=data.get('espo', None),
+                    vip2=data.get('vip2', None),
+                    ir4=data.get('ir4.0', None),
                     remarks=data.get('remarks', None),
                     ongoing_project=data.get('ongoing_project', None),
                     status=data.get('status', None)
                 )
 
-        return HttpResponse("Files uploaded and data processed successfully.")
+            return HttpResponse("Files uploaded and data processed successfully.")
+
+
+
     return render(request, 'upload.html')
 
 
@@ -498,3 +571,51 @@ def clean_vendor_data(grade_queryset, spend_queryset):
     spend_data['overall_5_years'] = pd.to_numeric(spend_data['overall_5_years'], errors='coerce').fillna(0)
 
     return grade_data, spend_data
+
+from django.http import HttpResponse
+from django.template.loader import get_template
+from io import BytesIO
+from xhtml2pdf import pisa
+
+def download_pdf(request, template_path, context_data):
+    """
+    Generate a PDF from a given template and context data.
+
+    :param request: The HTTP request object.
+    :param template_path: Path to the template file.
+    :param context_data: The data to be passed to the template.
+    :return: HTTP response with the generated PDF.
+    """
+    context = context_data  # Pass the context data to the template
+    response = HttpResponse(content_type='application/pdf')
+    
+    # Extract filename from the template path (handling cases where there are no slashes)
+    filename = template_path.split('/')[-1].split('.')[0] + '.pdf'
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    
+    # Load the template and render it with the context
+    template = get_template(template_path)
+    html = template.render(context)
+    
+    # Create PDF from the rendered HTML
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    
+    # Check for errors
+    if pisa_status.err:
+        return HttpResponse(f'We had some errors <pre>{html}</pre>')
+    
+    return response
+
+
+def grade_data_download(request):
+    context = {'grade_data': VendorGradeData.objects.all()}
+    return download_pdf(request, 'grade_data_view.html', context)
+
+def spend_data_download(request):
+    context = {'spend_data': VendorSpendData.objects.all()}
+    return download_pdf(request, 'spend_data_view.html', context)
+
+def matrix_data_download(request):
+    context = {'matrix_data': VendorMatrixData.objects.all()}
+    return download_pdf(request, 'matrix_data_view.html', context)
+

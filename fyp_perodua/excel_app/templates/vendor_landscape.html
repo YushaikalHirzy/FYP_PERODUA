@@ -23,32 +23,23 @@
             color: #444;
         }
 
-        /* Navbar Styles */
-        .navbar {
-            background: linear-gradient(90deg, #4A90E2, #357ABD);
+       /* Navbar Styles */
+       .navbar {
+            background: linear-gradient(90deg, #4A90E2, #00bcd4);
             color: white;
             width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-top: 10px;
-            padding-bottom: 10px;
-            padding-left: 10px;
-            padding-right: 10px;
+            padding: 15px 30px;
             position: fixed;
             top: 0;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             z-index: 1000;
-            transition: background-color 0.3s ease;
-        }
-
-        .navbar:hover {
-            background: linear-gradient(90deg, #357ABD, #4A90E2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .navbar .logo img {
             height: 50px;
-            object-fit: contain;
             transition: transform 0.3s ease;
         }
 
@@ -64,38 +55,40 @@
         .nav-links a {
             color: white;
             text-decoration: none;
-            margin: 0 20px;
+            margin: 0 15px;
             font-weight: 500;
-            font-size: 1.1rem;
+            font-size: 1rem;
             transition: color 0.3s ease, transform 0.3s ease;
         }
 
         .nav-links a:hover {
-            color: #f4f4f9;
-            text-decoration: underline;
-            transform: scale(1.05);
+            color: #f8f9fa;
+            transform: translateY(-3px);
         }
 
         .button-signout {
             background-color: #ff4d4f;
             padding: 10px 20px;
-            border-radius: 5px;
+            border-radius: 20px;
             color: white;
-            font-weight: 500;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(255, 77, 79, 0.5);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            text-decoration: none;
         }
 
         .button-signout:hover {
             background-color: #e04344;
-            transform: scale(1.05);
+            transform: scale(1.1);
         }
-        
+
 
         /* Table styling */
         table {
-            width: 100%;
+            width: 90%; /* Reduce table width for better readability */
+            max-width: 1500px; /* Set a maximum width to avoid stretching */
+            margin: 20px auto; /* Center the table */
             border-collapse: collapse;
-            margin: 20px auto;
             background-color: #fff;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
@@ -103,16 +96,16 @@
         th, td {
             border: 1px solid #ddd;
             text-align: center;
-            padding: 12px;
+            padding: 30px; /* Adjust padding to make it more compact */
+            font-size: 0.9rem; /* Slightly reduce font size */
         }
 
         th {
             background-color: #a4a3a3;
             color: white;
             text-transform: uppercase;
-            font-size: 14px;
+            font-size: 0.85rem; /* Reduce font size for headers */
         }
-
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
@@ -246,7 +239,23 @@
 
     <h2>Vendor Landscape</h2>
 
-    <table>
+    <!-- Button to download table as PDF -->
+    <div style="text-align: center; margin: 20px 0;">
+        <button id="download-pdf" style="
+            background-color: #4A90E2; 
+            color: white; 
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        ">
+            Download PDF
+        </button>
+    </div>
+
+    <table id="vendor-table">
         <thead>
             <tr>
                 <th>Vendor Grade →<br>Spend Value ↓</th>
@@ -294,6 +303,9 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
     <script>
         const overlay = document.getElementById('overlay');
         const modal = document.getElementById('vendor-modal');
@@ -313,6 +325,28 @@
         }
 
         overlay.addEventListener('click', closeVendorModal);
+
+        //Download script
+        document.getElementById('download-pdf').addEventListener('click', () => {
+        const { jsPDF } = window.jspdf;
+
+        // Get the table element
+        const table = document.getElementById('vendor-table');
+
+        // Use html2canvas to convert the table to an image
+        html2canvas(table, { scale: 2 }).then((canvas) => {
+            const pdf = new jsPDF('landscape', 'mm', 'a4');
+            const imgData = canvas.toDataURL('image/png');
+            const imgWidth = 280; // Adjust width to fit in A4 landscape
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            // Add the image to the PDF
+            pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+
+            // Save the PDF
+            pdf.save('Vendor_Landscape_Table.pdf');
+        });
+    });
     </script>
 </body>
 </html>

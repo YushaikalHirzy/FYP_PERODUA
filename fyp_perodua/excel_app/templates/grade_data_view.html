@@ -8,245 +8,251 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-/* General Reset */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Poppins', sans-serif;
-    }
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
 
-    body {
-        background: linear-gradient(to bottom, #f0f4f8, #dff1ff);
-        color: #333;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        text-align: center;
-        overflow-x: hidden;
-    }
-
-    /* Main Content */
-    .container {
-        margin-top: 120px;
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-        padding: 50px 40px;
-        display: inline-block;
-        width: auto;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    h1 {
-        font-size: 2.8rem;
-        font-weight: 700;
-        color: #4A90E2;
-        margin-bottom: 25px;
-        text-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Navbar Styles */
-    .navbar {
-        background: linear-gradient(90deg, #4A90E2, #00bcd4);
-        color: white;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px 30px;
-        position: fixed;
-        top: 0;
-        z-index: 1000;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .navbar .logo img {
-        height: 50px;
-        transition: transform 0.3s ease;
-    }
-
-    .navbar .logo img:hover {
-        transform: scale(1.1);
-    }
-
-    .nav-links {
-        display: flex;
-        align-items: center;
-    }
-
-    .nav-links a {
-        color: white;
-        text-decoration: none;
-        margin: 0 15px;
-        font-weight: 500;
-        font-size: 1rem;
-        transition: color 0.3s ease, transform 0.3s ease;
-    }
-
-    .nav-links a:hover {
-        color: #f8f9fa;
-        transform: translateY(-3px);
-    }
-
-    /* Button Styles */
-    .button-signout, .btn, .btn-secondary, .btn-primary, .btn-danger {
-        padding: 10px 20px;
-        border-radius: 20px;
-        color: white;
-        font-weight: 600;
-        text-decoration: none;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, background-color 0.3s ease;
-        display: inline-block;
-        text-align: center;
-        margin: 10px;
-    }
-
-    .button-signout {
-        background-color: #ff4d4f;
-    }
-
-    .button-signout:hover {
-        background-color: #e04344;
-        transform: scale(1.1);
-    }
-
-    .btn {
-        background-color: #4A90E2;
-    }
-
-    .btn:hover {
-        background-color: #357ABD;
-        transform: scale(1.1);
-    }
-
-    .btn-secondary {
-        background-color: #00bcd4;
-    }
-
-    .btn-secondary:hover {
-        background-color: #00a3c4;
-        transform: scale(1.1);
-    }
-
-    .btn-primary {
-        background-color: #00bcd4;
-    }
-
-    .btn-primary:hover {
-        background-color: #00a3c4;
-        transform: scale(1.1);
-    }
-
-    .btn-danger {
-        background-color: #ff4d4f;
-    }
-
-    .btn-danger:hover {
-        background-color: #e04344;
-        transform: scale(1.1);
-    }
-
-    /* Table Styles */
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-        font-size: 1rem;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    th, td {
-        padding: 15px;
-        text-align: center;
-        border-bottom: 1px solid #ddd;
-    }
-
-    th {
-        background-color: #4A90E2;
-        color: white;
-        font-weight: 600;
-    }
-
-    td a {
-        color: #fff;
-        background-color: #4A90E2;
-        padding: 6px 12px;
-        border-radius: 12px;
-        text-decoration: none;
-        margin-right: 18px;
-        font-size: 0.9rem;
-        display: inline-block;
-        width: auto;
-    }
-
-    td a:hover {
-        background-color: #357ABD;
-    }
-
-    .green {
-        background-color: #7ED321;
-        color: white;
-    }
-
-    .yellow {
-        background-color: #F8E71C;
-        color: black;
-    }
-
-    .red {
-        background-color: #D0021B;
-        color: white;
-    }
-
-    /* Scroll to Top Button */
-    #scrollToTopBtn {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background-color: #4A90E2;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        padding: 15px;
-        font-size: 1.5rem;
-        cursor: pointer;
-        display: none;
-        z-index: 999;
-        transition: transform 0.3s ease;
-    }
-
-    #scrollToTopBtn:hover {
-        background-color: #357ABD;
-        transform: scale(1.1);
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .navbar {
+        body {
+            background: linear-gradient(to bottom, #eef2f3, #d1e9f1);
+            color: #333;
+            display: flex;
             flex-direction: column;
-            padding: 10px 20px;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            text-align: center;
+            padding-top: 150px;
+        }
+
+         /* Navbar Styles */
+         .navbar {
+            background: linear-gradient(90deg, #4A90E2, #00bcd4);
+            color: white;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .logo img {
+            height: 50px;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar .logo img:hover {
+            transform: scale(1.1);
         }
 
         .nav-links {
-            margin-top: 10px;
-            justify-content: center;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #f8f9fa;
+            transform: translateY(-3px);
+        }
+
+        .button-signout {
+            background-color: #ff4d4f;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(255, 77, 79, 0.5);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .button-signout:hover {
+            background-color: #e04344;
+            transform: scale(1.1);
+        }
+
+        /* Container Styles */
+        .container {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            padding: 40px 30px;
+            width: 90%;
+            max-width: 1200px;
+            margin-bottom: 50px;
         }
 
         h1 {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #4A90E2;
+            margin-bottom: 30px;
+            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
         }
 
+        /* Button Styles */
+        .btn-group {
+            margin-bottom: 20px;
+        }
+
+        .btn-group a, .btn-group button {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            margin: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .btn-secondary {
+            background-color: #00bcd4;
+        }
+
+        .btn-secondary:hover {
+            background-color: #009bb2;
+            transform: scale(1.05);
+        }
+
+        .btn-primary {
+            background-color: #4A90E2;
+        }
+
+        .btn-primary:hover {
+            background-color: #357ABD;
+            transform: scale(1.05);
+        }
+
+        .btn-danger {
+            background-color: #ff4d4f;
+        }
+
+        .btn-danger:hover {
+            background-color: #e04344;
+            transform: scale(1.05);
+        }
+
+        /* Table Styles */
         table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4A90E2;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        td {
             font-size: 0.9rem;
         }
-    }
-</style>
+
+        td a {
+            color: white;
+            background-color: #4A90E2;
+            padding: 8px 15px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin: 0 5px;
+            display: inline-block;
+        }
+
+        td a:hover {
+            background-color: #357ABD;
+        }
+
+        /* Status Color Classes */
+        .green {
+            background-color: #7ED321;
+            color: rgb(36, 68, 22);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .yellow {
+            background-color: #F8E71C;
+            color: rgb(102, 97, 32);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .red {
+            background-color: #D0021B;
+            color: rgb(88, 28, 28);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        /* Scroll to Top Button */
+        #scrollToTopBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4A90E2;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: none;
+            z-index: 999;
+            transition: transform 0.3s ease;
+        }
+
+        #scrollToTopBtn:hover {
+            background-color: #357ABD;
+            transform: scale(1.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            td a {
+                font-size: 0.75rem;
+                padding: 6px 10px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
@@ -267,18 +273,19 @@
     <!-- Main Content -->
     <div class="container">
         <h1>Vendor Grade Data</h1>
-        <a href="{% url 'view_data' %}" class="btn btn-secondary">Back to Data Overview</a>
-        <a href="{% url 'grade_data_add' %}" class="btn">Add New Vendor</a>
-        <form method="POST" action="{% url 'delete_all_grade_data' %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete all vendor data? This action cannot be undone!')">
-                Delete All Vendors
-            </button>
-        </form>
+        <div class="btn-group">
+            <a href="{% url 'view_data' %}" class="btn-secondary">Back to Data Overview</a>
+            <a href="{% url 'grade_data_download' %}" class="btn-secondary">Download as PDF</a>
+            <a href="{% url 'grade_data_add' %}" class="btn-primary">Add New Vendor</a>
+            <form method="POST" action="{% url 'delete_all_grade_data' %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-danger" onclick="return confirm('Are you sure you want to delete all vendor data? This action cannot be undone!')">Delete All Vendors</button>
+            </form>
+        </div>
         <table>
             <thead>
                 <tr>
-                    <th>NO</th>
+                    <th>No</th>
                     <th>Vendor</th>
                     <th>Short Name</th>
                     <th>Vendor Code</th>
@@ -303,8 +310,8 @@
                     <td class="{% if data.overall_2021 == 'G' %}green{% elif data.overall_2021 == 'Y' %}yellow{% elif data.overall_2021 == 'R' %}red{% endif %}">{{ data.overall_2021 }}</td>
                     <td class="{% if data.overall_2022 == 'G' %}green{% elif data.overall_2022 == 'Y' %}yellow{% elif data.overall_2022 == 'R' %}red{% endif %}">{{ data.overall_2022 }}</td>
                     <td>
-                        <a href="{% url 'grade_data_edit' data.pk %}" class="btn btn-primary">Edit</a>
-                        <a href="{% url 'grade_data_delete' data.pk %}" class="btn btn-primary">Delete</a>
+                        <a href="{% url 'grade_data_edit' data.pk %}" class="btn-primary">Edit</a>
+                        <a href="{% url 'grade_data_delete' data.pk %}" class="btn-danger">Delete</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -316,19 +323,18 @@
     <button id="scrollToTopBtn" onclick="scrollToTop()">↑</button>
 
     <script>
-        // Show the scroll-to-top button after scrolling down 200px
+        // Scroll to Top Button Logic
+        const scrollToTopBtn = document.getElementById("scrollToTopBtn");
         window.onscroll = function() {
-            const scrollBtn = document.getElementById("scrollToTopBtn");
             if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-                scrollBtn.style.display = "block";
+                scrollToTopBtn.style.display = "block";
             } else {
-                scrollBtn.style.display = "none";
+                scrollToTopBtn.style.display = "none";
             }
         };
 
-        // Scroll to the top of the page
         function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
     </script>
 </body>

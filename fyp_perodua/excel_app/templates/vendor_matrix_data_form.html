@@ -1,0 +1,10 @@
+<h1 style="text-align: center; color: #ff5733; margin-bottom: 20px; font-size: 2.5em;">{{ view.title }}</h1>
+<form method="post" style="max-width: 400px; margin: 0 auto; padding: 20px; border: 2px solid #357ABD; border-radius: 10px; background-color: #f0f8ff; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" style="width: 100%; padding: 12px; background: linear-gradient(45deg, #357ABD, #9c33ff); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; transition: background 0.3s ease;">
+        Save
+    </button>
+</form>
+
+

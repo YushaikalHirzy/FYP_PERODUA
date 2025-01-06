@@ -40,8 +40,8 @@
             min-width: 1200px; /* Ensure the table has a minimum width */
         }
 
-        /* Navbar */
-        .navbar {
+ /* Navbar Styles */
+ .navbar {
             background: linear-gradient(90deg, #4A90E2, #00bcd4);
             color: white;
             width: 100%;
@@ -60,18 +60,45 @@
             transition: transform 0.3s ease;
         }
 
-        .navbar .nav-links a {
+        .navbar .logo img:hover {
+            transform: scale(1.1);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a {
             color: white;
             text-decoration: none;
             margin: 0 15px;
             font-weight: 500;
             font-size: 1rem;
-            transition: transform 0.3s ease;
+            transition: color 0.3s ease, transform 0.3s ease;
         }
 
-        .navbar .nav-links a:hover {
+        .nav-links a:hover {
+            color: #f8f9fa;
             transform: translateY(-3px);
         }
+
+        .button-signout {
+            background-color: #ff4d4f;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(255, 77, 79, 0.5);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .button-signout:hover {
+            background-color: #e04344;
+            transform: scale(1.1);
+        }
+
 
         /* Main Content */
         .container {
@@ -91,25 +118,50 @@
             margin-bottom: 25px;
         }
 
-        .btn {
+        /* Button Styles */
+        .btn-group {
+            margin-bottom: 20px;
+
+        }
+
+        .btn-group a, .btn-group button {
+            display: inline-block;
             padding: 10px 20px;
             border-radius: 20px;
             color: white;
             font-weight: 600;
             text-decoration: none;
-            background-color: #4A90E2;
+            margin: 5px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin: 10px;
-            transition: transform 0.3s ease;
-        }
-
-        .btn:hover {
-            transform: scale(1.1);
-            background-color: #357ABD;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            
         }
 
         .btn-secondary {
             background-color: #00bcd4;
+        }
+
+        .btn-secondary:hover {
+            background-color: #009bb2;
+            transform: scale(1.05);
+        }
+
+        .btn-primary {
+            background-color: #4A90E2;
+        }
+
+        .btn-primary:hover {
+            background-color: #357ABD;
+            transform: scale(1.05);
+        }
+
+        .btn-danger {
+            background-color: #ff4d4f;
+        }
+
+        .btn-danger:hover {
+            background-color: #e04344;
+            transform: scale(1.05);
         }
 
         /* Table Styles */
@@ -119,7 +171,7 @@
             margin-top: 20px;
             font-size: 1rem;
         }
-
+        
         th, td {
             padding: 15px;
             text-align: center;
@@ -138,6 +190,13 @@
             padding: 6px 12px;
             border-radius: 12px;
             text-decoration: none;
+            margin-right: 10px; /* Adds space between buttons */
+        }
+
+        /* Adjust button size and spacing */
+        td a.btn-primary, td a.btn-danger {
+            padding: 8px 15px;  /* Smaller padding to avoid overlapping */
+            font-size: 0.9rem;   /* Adjust font size */
         }
 
         td a:hover {
@@ -161,6 +220,7 @@
     <!-- Navbar -->
     <div class="navbar">
         <div class="logo">
+            {% load static %}
             <a href="{% url 'home' %}">
                 <img src="{% static 'excel_app/images/LOGO PERODUA.png' %}" alt="Perodua Logo">
             </a>
@@ -170,12 +230,21 @@
             <a href="{% url 'view_data' %}">View Data</a>
             <a href="{% url 'vendor_landscape' %}">Vendor Landscape</a>
         </div>
+        <a href="{% url 'logout' %}" class="button-signout">Sign Out</a>
     </div>
 
     <!-- Main Content -->
     <div class="container">
         <h1>Vendor Matrix Data</h1>
-        <a href="{% url 'view_data' %}" class="btn btn-secondary">Back to Data Overview</a>
+        <div class="btn-group">
+            <a href="{% url 'view_data' %}" class="btn-secondary">Back to Data Overview</a>
+            <a href="{% url 'matrix_data_download' %}" class="btn-secondary">Download as PDF</a>
+            <a href="{% url 'matrix_data_add' %}" class="btn-primary">Add New Vendor</a>
+            <form method="POST" action="{% url 'delete_all_matrix_data' %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-danger" onclick="return confirm('Are you sure you want to delete all vendor data? This action cannot be undone!')">Delete All Vendors</button>
+            </form>
+        </div>
         <div class="table-container">
             <table>
                 <thead>
@@ -197,7 +266,8 @@
                         <th>VIP2</th>
                         <th>IR4.0</th>
                         <th>Remarks</th>
-                        <th>O-Rating</th>
+                        <th>Ongoing Project</th>
+                        <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -221,8 +291,12 @@
                         <td>{{ data.vip2 }}</td>
                         <td>{{ data.ir40 }}</td>
                         <td>{{ data.remarks }}</td>
-                        <td>{{ data.o_rating }}</td>
-                        <td><a href="#" class="btn">Edit</a></td>
+                        <td>{{ data.ongoing_project }}</td>
+                        <td>{{ data.status }}</td>
+                        <td>
+                            <a href="{% url 'matrix_data_edit' data.pk %}" class="btn-primary">Edit</a>
+                            <a href="{% url 'matrix_data_delete' data.pk %}" class="btn-danger">Delete</a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

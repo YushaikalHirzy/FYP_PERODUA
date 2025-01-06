@@ -230,12 +230,12 @@
     <div class="container">
         <h1>Vendor Spend Data</h1>
         <a href="{% url 'view_data' %}" class="btn btn-secondary">Back to Data Overview</a>
+        <a href="{% url 'spend_data_download' %}" class="btn-secondary">Download as PDF</a>
         <a href="{% url 'spend_data_add' %}" class="btn">Add New Vendor</a>
-        <form method="POST" action="{% url 'delete_all_spend_data' %}">
+        <form method="POST" action="{% url 'delete_all_spend_data' %}" style="display:inline;">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete all vendor data? This action cannot be undone!')">
-                Delete All Vendors
-            </button>
+            <button type="submit" class="btn-danger" onclick="return confirm('Are you sure you want to delete all vendor data? This action cannot be undone!')">Delete All Vendors</button>
+        </form>
         </form>
         <table>
             <thead>
@@ -262,7 +262,10 @@
                     <td>RM{{ data.grand_total_2022 }}</td>
                     <td>RM{{ data.grand_total_2023 }}</td>
                     <td>RM{{ data.overall_5_years }}</td>
-                    <td><a href="#" class="btn btn-primary">Edit</a></td>
+                    <td>
+                    <a href="{% url 'spend_data_edit' data.pk %}" class="btn btn-primary">Edit</a>
+                    <a href="{% url 'spend_data_delete' data.pk %}" class="btn-danger">Delete</a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
