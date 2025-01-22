@@ -15,7 +15,7 @@
         body {
             font-family: 'Roboto', sans-serif;
             height: 100vh;
-            background: linear-gradient(135deg, #4A90E2, #9013FE);
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -24,13 +24,12 @@
 
         .login-container {
             background-color: #fff;
-            padding: 50px 60px;
-            border-radius: 20px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px 50px;
+            border-radius: 15px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             text-align: center;
-            transform: scale(1);
             animation: fadeIn 0.8s ease-out;
         }
 
@@ -46,79 +45,88 @@
         }
 
         h2 {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             color: #333;
             font-weight: 700;
-            font-size: 1.8rem;
-            letter-spacing: 1px;
+            font-size: 2rem;
+            letter-spacing: 0.5px;
         }
 
         form {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
         }
 
         form input[type="text"],
         form input[type="password"] {
-            padding: 15px 20px;
+            padding: 14px 20px;
             margin-bottom: 20px;
-            border: 2px solid #ddd;
+            border: 1px solid #ccc;
             border-radius: 10px;
-            background-color: #f8f8f8;
+            background-color: #f7f7f7;
             font-size: 1rem;
-            font-weight: 400;
-            color: #333;
-            transition: border-color 0.3s ease, background-color 0.3s ease;
+            color: #555;
+            transition: border-color 0.3s, background-color 0.3s;
         }
 
         form input[type="text"]:focus,
         form input[type="password"]:focus {
             outline: none;
-            border-color: #4A90E2;
+            border-color: #2575fc;
             background-color: #fff;
         }
 
         button {
-            padding: 16px;
+            padding: 15px;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 1.1rem;
             font-weight: 600;
             color: #fff;
-            background-color: #4A90E2;
+            background-color: #6a11cb;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         button:hover {
-            background-color: #357ABD;
+            background-color: #2575fc;
             transform: translateY(-2px);
         }
 
         .register-link {
-            font-size: 0.9rem;
-            color: #666;
+            font-size: 0.95rem;
+            color: #777;
+            margin-top: 15px;
         }
 
         .register-link a {
-            color: #9013FE;
+            color: #6a11cb;
             text-decoration: none;
             font-weight: 600;
-            transition: color 0.3s ease;
+            transition: color 0.3s;
         }
 
         .register-link a:hover {
-            color: #4A90E2;
+            color: #2575fc;
             text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 40px;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+            }
         }
     </style>
     <script>
-    // Prevent the user from navigating back to the login page after logging in
-    window.history.pushState(null, null, window.location.href);
-    window.onpopstate = function() {
         window.history.pushState(null, null, window.location.href);
-    }
+        window.onpopstate = function() {
+            window.history.pushState(null, null, window.location.href);
+        }
     </script>
 </head>
 <body>

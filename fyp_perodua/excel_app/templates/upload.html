@@ -44,7 +44,6 @@
             color: white;
             transform: scale(1.05);
         }
-        /* Navbar Styles */
         .navbar {
             background: linear-gradient(90deg, #4A90E2, #00bcd4);
             color: white;
@@ -121,8 +120,18 @@
     </style>
 </head>
 <body>
-       <!-- Navbar -->
-       <div class="navbar">
+    {% if messages %}
+    <div class="container">
+        {% for message in messages %}
+            <div class="alert alert-success mt-3" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Navbar -->
+    <div class="navbar">
         <div class="logo">
             {% load static %}
             <a href="{% url 'home' %}">
@@ -137,32 +146,38 @@
         <a href="{% url 'logout' %}" class="button-signout">Sign Out</a>
     </div>
 
+    <!-- Main Content -->
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">Upload Vendor Data Excel File</div>
-                    <div class="card-body">
-                        <form id="uploadForm" action="{% url 'upload_excel' %}" method="POST" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                <label for="vendor_data_file">Upload Vendor Grade Data:</label>
-                                <input type="file" name="vendor_data_file" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label for="spend_data_file">Upload Vendor Spend Data:</label>
-                                <input type="file" name="spend_data_file" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label for="matrix_data_file">Upload Vendor Matrix Data:</label>
-                                <input type="file" name="matrix_data_file" class="form-control">
-                            </div>
-                            <button type="submit" class="btn btn-custom w-100">Upload</button>
-                        </form>
+        <div class="card">
+            <div class="card-header">
+                Upload Vendor Data Files
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="vendor_data_file" class="form-label">Vendor Data File</label>
+                        <input type="file" class="form-control" id="vendor_data_file" name="vendor_data_file">
                     </div>
-                </div>
+                    <div class="mb-3">
+                        <label for="spend_data_file" class="form-label">Spend Data File</label>
+                        <input type="file" class="form-control" id="spend_data_file" name="spend_data_file">
+                    </div>
+                    <div class="mb-3">
+                        <label for="matrix_data_file" class="form-label">Matrix Data File</label>
+                        <input type="file" class="form-control" id="matrix_data_file" name="matrix_data_file">
+                    </div>
+                    <button type="submit" class="btn btn-custom">Upload</button>
+                </form>
             </div>
         </div>
+
+        <!-- Success Message -->
+        {% if success %}
+        <div class="alert alert-success mt-3" role="alert">
+            Data uploaded successfully!
+        </div>
+        {% endif %}
     </div>
 </body>
 </html>

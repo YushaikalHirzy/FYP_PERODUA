@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Vendor Analytics Dashboard</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #f0f4f8, #dff1ff);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background: linear-gradient(90deg, #4A90E2, #00bcd4);
+            color: white;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .logo img {
+            height: 50px;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar .logo img:hover {
+            transform: scale(1.1);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #f8f9fa;
+            transform: translateY(-3px);
+        }
+
+        .button-signout {
+            background-color: #ff4d4f;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(255, 77, 79, 0.5);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .button-signout:hover {
+            background-color: #e04344;
+            transform: scale(1.1);
+        }
+
+        /* Header Section */
+        header {
+            margin-top: 80px; /* Offset for fixed navbar */
+            margin-bottom: 40px;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #4A90E2;
+            margin-bottom: 20px;
+        }
+
+        /* Chart Section */
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .chart-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+            padding: 20px;
+        }
+
+        .chart-container h2 {
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: #4A90E2;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 10px 20px;
+            }
+
+            .nav-links {
+                margin-top: 10px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links a {
+                margin: 5px 0;
+            }
+
+            .container {
+                width: 90%;
+            }
+
+            .chart-container h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">
+            {% load static %}
+            <a href="{% url 'home' %}">
+                <img src="{% static 'excel_app/images/LOGO PERODUA.png' %}" alt="Perodua Logo">
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'upload_excel' %}">Upload Data</a>
+            <a href="{% url 'view_data' %}">View Data</a>
+            <a href="{% url 'vendor_landscape' %}">Vendor Landscape</a>
+        </div>
+        <a href="{% url 'logout' %}" class="button-signout">Sign Out</a>
+    </div>
+
+    <!-- Header Section -->
+    <header>
+        <h1>Vendor Analytics Dashboard</h1>
+    </header>
+
+    <!-- Main Content Section -->
+    <div class="container">
+        <!-- Chart 1 -->
+        <div class="chart-container">
+            <h2>Vendor Grades Distribution Over Years</h2>
+            <div id="chart1">{{ chart1|safe }}</div>
+        </div>
+
+        <!-- Chart 4 -->
+        <div class="chart-container">
+            <h2>Overall Grade Count</h2>
+            <div id="chart4">{{ chart4|safe }}</div>
+        </div>
+
+        <!-- Chart 2 -->
+        <div class="chart-container">
+            <h2>Top 10 Vendor Spend Distribution</h2>
+            <div id="chart2">{{ chart2|safe }}</div>
+        </div>
+
+        <!-- Chart 3 -->
+        <div class="chart-container">
+            <h2>Vendor Spend Distribution Over Years</h2>
+            <div id="chart3">{{ chart3|safe }}</div>
+        </div>
+
+    </div>
+</body>
+</html>

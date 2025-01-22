@@ -1,10 +1,181 @@
-<h1 style="text-align: center; color: #ff5733; margin-bottom: 20px; font-size: 2.5em;">{{ view.title }}</h1>
-<form method="post" style="max-width: 400px; margin: 0 auto; padding: 20px; border: 2px solid #357ABD; border-radius: 10px; background-color: #f0f8ff; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" style="width: 100%; padding: 12px; background: linear-gradient(45deg, #357ABD, #9c33ff); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; transition: background 0.3s ease;">
-        Save
-    </button>
-</form>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Year Grades</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #343a40;
+            margin-bottom: 1rem;
+        }
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #dc3545;
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+        .error {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card p-4">
+            <form method="post">
+                {% csrf_token %}
+                
+                <h2 class="text-center mb-4">Year Grades</h2>
+                
+                <div class="mb-4">
+                    <h3>Vendor Information</h3>
+                    {{ form.as_p }}
+                </div>
+                
+                <div class="mb-4">
+                    <h3>Year Grades</h3>
+                    {{ year_grades_formset.management_form }}
+                    <table class="table table-bordered" id="year-grades-table">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Year</th>
+                                <th>Grade</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for year_grade_form in year_grades_formset %}
+                                <tr>
+                                    <td>
+                                        {{ year_grade_form.year }}
+                                        {% if year_grade_form.year.errors %}
+                                            <span class="error">{{ year_grade_form.year.errors }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ year_grade_form.grade }}
+                                        {% if year_grade_form.grade.errors %}
+                                            <span class="error">{{ year_grade_form.grade.errors }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if year_grade_form.instance.pk %}
+                                            <button type="button" class="delete-btn" aria-label="Delete" onclick="deleteRow(this)">×</button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {{ year_grade_form.id }}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="d-flex justify-content-between mb-3">
+                    <button type="button" class="btn btn-secondary" id="add-year-grade">Add Another Year</button>
+                    <input type="text" name="overall_total" placeholder="Overall Total" class="form-control w-25" readonly>
+                </div>
+                
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a href="{% url 'grade_data_view' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to calculate the total
+            function calculateTotal() {
+                let total = 0;
+                const grandTotalInputs = document.querySelectorAll('input[name*="grand_total"]');
+                grandTotalInputs.forEach(input => {
+                    const value = parseFloat(input.value) || 0;
+                    total += value;
+                });
 
+                const overallTotalInput = document.querySelector('input[name="overall_total"]');
+                if (overallTotalInput) {
+                    overallTotalInput.value = total.toFixed(2);
+                }
+            }
+
+            // Event listener for grand total inputs
+            const container = document.querySelector('tbody');
+            container.addEventListener('input', function(e) {
+                if (e.target.name && e.target.name.includes('grand_total')) {
+                    calculateTotal();
+                }
+            });
+
+            // Initial total calculation
+            calculateTotal();
+
+            // Add new row dynamically
+            const addButton = document.getElementById('add-year-grade');
+            if (addButton) {
+                addButton.addEventListener('click', function() {
+                    const tbody = document.querySelector('#year-grades-table tbody');
+                    const rowCount = tbody.rows.length;
+
+                    const newRow = document.createElement('tr');
+                    newRow.innerHTML = `
+                        <td>
+                            <input type="text" name="year_grades-${rowCount}-year" class="form-control">
+                        </td>
+                        <td>
+                            <select name="year_grades-${rowCount}-grade" class="form-control">
+                                <option value="G">G</option>
+                                <option value="Y">Y</option>
+                                <option value="R">R</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button type="button" class="delete-btn" aria-label="Delete" onclick="deleteRow(this)">×</button>
+                        </td>
+                    `;
+                    tbody.appendChild(newRow);
+
+                    // Recalculate total after adding a row
+                    calculateTotal();
+                });
+            }
+        });
+
+        // Function to delete a row
+        function deleteRow(button) {
+            const row = button.closest('tr');
+            row.remove();
+
+            // Recalculate the total after deleting a row
+            const grandTotalInputs = document.querySelectorAll('input[name*="grand_total"]');
+            if (grandTotalInputs.length === 0) {
+                document.querySelector('input[name="overall_total"]').value = '';
+            } else {
+                calculateTotal();
+            }
+        }
+    </script>
+</body>
+</html>

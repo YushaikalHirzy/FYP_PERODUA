@@ -15,16 +15,16 @@
             background-color: #f0f4f8;
             color: #333;
         }
-
+    
         h2 {
             padding-top: 100px;
             text-align: center;
             margin: 20px 0;
             color: #444;
         }
-
-       /* Navbar Styles */
-       .navbar {
+    
+        /* Navbar Styles */
+        .navbar {
             background: linear-gradient(90deg, #4A90E2, #00bcd4);
             color: white;
             width: 100%;
@@ -37,21 +37,21 @@
             z-index: 1000;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-
+    
         .navbar .logo img {
             height: 50px;
             transition: transform 0.3s ease;
         }
-
+    
         .navbar .logo img:hover {
             transform: scale(1.1);
         }
-
+    
         .nav-links {
             display: flex;
             align-items: center;
         }
-
+    
         .nav-links a {
             color: white;
             text-decoration: none;
@@ -60,12 +60,12 @@
             font-size: 1rem;
             transition: color 0.3s ease, transform 0.3s ease;
         }
-
+    
         .nav-links a:hover {
             color: #f8f9fa;
             transform: translateY(-3px);
         }
-
+    
         .button-signout {
             background-color: #ff4d4f;
             padding: 10px 20px;
@@ -76,65 +76,139 @@
             transition: transform 0.3s ease, background-color 0.3s ease;
             text-decoration: none;
         }
-
+    
         .button-signout:hover {
             background-color: #e04344;
             transform: scale(1.1);
         }
+    
+        /* Button Styles */
+        .btn-group {
+            margin-bottom: 20px;
+        }
+    
+        .btn-group a, .btn-group button {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            margin: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+    
+        .btn-secondary {
+            background-color: #00bcd4;
+        }
+    
+        .btn-secondary:hover {
+            background-color: #009bb2;
+            transform: scale(1.05);
+        }
+    
+        .btn-primary {
+            background-color: #4A90E2;
+        }
+    
+        .btn-primary:hover {
+            background-color: #357ABD;
+            transform: scale(1.05);
+        }
+    
+        .btn-danger {
+            background-color: #ff4d4f;
+        }
+    
+        .btn-danger:hover {
+            background-color: #e04344;
+            transform: scale(1.05);
+        }
 
-
+        /* Container for centering the button */
+        .button-container {
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            margin-top: 20px;
+        }
+    
+        /* Download PDF button styling */
+        #download-pdf {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #4A90E2;
+            color: white;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            margin: 20px auto;
+            text-align: center;
+        }
+    
+        #download-pdf:hover {
+            background-color: #357ABD;
+            transform: scale(1.1);
+        }
+    
+        #download-pdf:active {
+            background-color: #2a6ca3;
+        }
+    
         /* Table styling */
         table {
-            width: 90%; /* Reduce table width for better readability */
-            max-width: 1500px; /* Set a maximum width to avoid stretching */
-            margin: 20px auto; /* Center the table */
+            width: 100%;
+            margin: 20px auto;
             border-collapse: collapse;
             background-color: #fff;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-
+    
         th, td {
             border: 1px solid #ddd;
             text-align: center;
-            padding: 30px; /* Adjust padding to make it more compact */
-            font-size: 0.9rem; /* Slightly reduce font size */
+            padding: 15px; /* Adjusted padding */
+            font-size: 1.2rem; /* Increased font size for readability */
         }
-
+    
         th {
             background-color: #a4a3a3;
             color: white;
             text-transform: uppercase;
-            font-size: 0.85rem; /* Reduce font size for headers */
+            font-size: 1.2rem; /* Increased font size */
         }
+    
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-
+    
         tr:hover {
             background-color: #eef;
         }
-
+    
         /* Vendor Grade Colors */
         .grade-G {
             background-color: #a7f3a7;
             color: #333;
         }
-
+    
         .grade-Y {
             background-color: #ffcc66;
             color: #333;
         }
-
+    
         .grade-R {
             background-color: #e48484;
             color: white;
         }
-
+    
         .grade-default {
             background-color: #d9d9d9;
             color: #333;
         }
-
+    
         /* Modal and Overlay */
         .overlay {
             position: fixed;
@@ -145,7 +219,7 @@
             background-color: rgba(0, 0, 0, 0.5);
             display: none;
         }
-
+    
         .modal {
             position: fixed;
             top: 50%;
@@ -154,12 +228,12 @@
             background-color: white;
             border-radius: 10px;
             padding: 20px;
-            width: 90%;
-            max-width: 600px;
+            width: 80%;
+            max-width: 800px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             display: none;
         }
-
+    
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -168,12 +242,12 @@
             padding-bottom: 10px;
             margin-bottom: 10px;
         }
-
+    
         .modal-header h3 {
             margin: 0;
             color: #4A90E2;
         }
-
+    
         .modal-header .close-btn {
             font-size: 1.5rem;
             cursor: pointer;
@@ -181,44 +255,135 @@
             background: none;
             border: none;
         }
-
+    
         .modal-body p {
             margin: 10px 0;
         }
-
+    
         /* Highlight and Pointer Effect */
         ul li {
             cursor: pointer;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
-
+    
         ul li:hover {
             background-color: #4A90E2;
             color: white;
         }
-
+    
+        /* Landscape adjustment for larger screens */
+        @media (min-width: 1024px) {
+            table {
+                width: 90%; /* Adjust width to 90% */
+                margin: 20px auto;
+                max-width: 100%; /* Ensure it fits the page */
+            }
+        }
+    
+        /* For A3 landscape paper size when downloading PDF */
+        @media print {
+            body {
+                transform: rotate(90deg); /* Rotate the page to landscape */
+                margin: 0;
+                padding: 0;
+            }
+            table {
+                width: 100%; /* Full width on the page */
+                max-width: 5000px;
+            }
+        }
+    
         /* Responsive adjustments */
         @media (max-width: 768px) {
             table {
-                font-size: 12px;
+                font-size: 14px;
             }
-
+    
             th, td {
                 padding: 8px;
             }
-
+    
             .navbar {
                 flex-wrap: wrap;
             }
         }
-
+    
         /* Animation */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-    
+
+        .year-selector {
+            margin: 20px auto;
+            max-width: 800px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .year-selector h3 {
+            margin-bottom: 15px;
+            color: #4A90E2;
+        }
+
+        .year-checkboxes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .year-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .year-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .year-checkbox label {
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .update-button {
+            background-color: #4A90E2;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .update-button:hover {
+            background-color: #357ABD;
+            transform: scale(1.05);
+        }
+
+        .update-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Error message style */
+        .error-message {
+            color: #ff4d4f;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
     </style>
+    
 </head>
 <body>
     <!-- Navbar -->
@@ -239,20 +404,28 @@
 
     <h2>Vendor Landscape</h2>
 
-    <!-- Button to download table as PDF -->
-    <div style="text-align: center; margin: 20px 0;">
-        <button id="download-pdf" style="
-            background-color: #4A90E2; 
-            color: white; 
-            padding: 10px 20px; 
-            border: none; 
-            border-radius: 5px; 
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-        ">
-            Download PDF
-        </button>
+        <!-- Add Year Selector Section -->
+        <div class="year-selector">
+            <h3>Select Years for Analysis</h3>
+            <div class="year-checkboxes">
+                {% for year in available_years %}
+                <div class="year-checkbox">
+                    <input type="checkbox" id="year-{{ year }}" name="selected_years" value="{{ year }}" 
+                           {% if year in default_years %}checked{% endif %}>
+                    <label for="year-{{ year }}">{{ year }}</label>
+                </div>
+                {% endfor %}
+            </div>
+            <div style="text-align: center;">
+                <button id="update-landscape" class="update-button">Update Landscape</button>
+            </div>
+            <div id="error-message" class="error-message">
+                Please select exactly 3 years for analysis
+            </div>
+        </div>
+
+    <div class="button-container">
+        <a href="javascript:void(0)" id="download-pdf" class="btn-secondary">Download as PDF</a>
     </div>
 
     <table id="vendor-table">
@@ -298,7 +471,7 @@
         </div>
         <div class="modal-body">
             <p><strong>Vendor Name:</strong> <span id="modal-vendor-name"></span></p>
-            <p><strong>Grades (Last 3 Years):</strong> <span id="modal-vendor-grade"></span></p>
+            <p><strong>Grades (Selected 3 Years):</strong> <span id="modal-vendor-grade"></span></p>
             <p><strong>Spend Value:</strong> <span id="modal-vendor-spend"></span></p>
         </div>
     </div>
@@ -307,6 +480,50 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 
     <script>
+               document.addEventListener('DOMContentLoaded', function() {
+            const updateButton = document.getElementById('update-landscape');
+            const errorMessage = document.getElementById('error-message');
+            const checkboxes = document.querySelectorAll('input[name="selected_years"]');
+
+            function updateButtonState() {
+                const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+                updateButton.disabled = checkedCount != 3;
+                errorMessage.style.display = checkedCount != 3 ? 'block' : 'none';
+            }
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateButtonState);
+            });
+
+            updateButton.addEventListener('click', function() {
+                const selectedYears = Array.from(checkboxes)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value);
+
+                if (selectedYears.length == 3) {
+                    // Submit the form with selected years
+                    const form = document.createElement('form');
+                    form.method = 'GET';
+                    form.action = window.location.pathname;
+
+                    selectedYears.forEach(year => {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'years';
+                        input.value = year;
+                        form.appendChild(input);
+                    });
+
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+
+            // Initialize button state
+            updateButtonState();
+        });
+
+
         const overlay = document.getElementById('overlay');
         const modal = document.getElementById('vendor-modal');
 
@@ -326,27 +543,48 @@
 
         overlay.addEventListener('click', closeVendorModal);
 
-        //Download script
-        document.getElementById('download-pdf').addEventListener('click', () => {
-        const { jsPDF } = window.jspdf;
+        // Download PDF function
+           // Download PDF function with adjusted scaling
+           document.getElementById('download-pdf').addEventListener('click', () => {
+    const { jsPDF } = window.jspdf;
 
-        // Get the table element
-        const table = document.getElementById('vendor-table');
+    // Get the table element
+    const table = document.getElementById('vendor-table');
 
-        // Use html2canvas to convert the table to an image
-        html2canvas(table, { scale: 2 }).then((canvas) => {
-            const pdf = new jsPDF('landscape', 'mm', 'a4');
-            const imgData = canvas.toDataURL('image/png');
-            const imgWidth = 280; // Adjust width to fit in A4 landscape
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    // Use html2canvas to convert the table to an image
+    html2canvas(table, { scale: 1 }).then((canvas) => {
+        const pdf = new jsPDF('landscape', 'mm', 'a3');  // Set paper size to A3
+        const imgData = canvas.toDataURL('image/png');
 
-            // Add the image to the PDF
-            pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+        // Get the page dimensions for A3
+        const pageWidth = pdf.internal.pageSize.width;
+        const pageHeight = pdf.internal.pageSize.height;
 
-            // Save the PDF
-            pdf.save('Vendor_Landscape_Table.pdf');
-        });
+        // Set the margins (top, left, bottom, right)
+        const marginTop = 20;
+        const marginLeft = 20;
+        const marginBottom = 20;
+        const marginRight = 20;
+
+        // Calculate the available width and height for the image
+        const availableWidth = pageWidth - marginLeft - marginRight;
+        const availableHeight = pageHeight - marginTop - marginBottom;
+
+        // Set the scale factor based on available space
+        const scaleFactor = Math.min(availableWidth / canvas.width, availableHeight / canvas.height);
+
+        // Calculate the new width and height after applying the scale factor
+        const imgWidth = canvas.width * scaleFactor;
+        const imgHeight = canvas.height * scaleFactor;
+
+        // Add the image to the PDF with margins
+        pdf.addImage(imgData, 'PNG', marginLeft, marginTop, imgWidth, imgHeight);
+
+        // Save the PDF
+        pdf.save('vendor_landscape.pdf');
     });
+});
+
     </script>
 </body>
 </html>

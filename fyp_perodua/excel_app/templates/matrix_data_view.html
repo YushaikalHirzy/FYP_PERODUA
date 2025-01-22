@@ -1,4 +1,5 @@
 {% load static %}
+{% load vendor_extras %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,21 +28,24 @@
             overflow-x: hidden;
         }
 
-         /* Add this CSS to make the table scrollable */
+        /* Add this CSS to make the table scrollable */
         .table-container {
             overflow-x: auto;
+            overflow-y: auto; /* Ensures vertical scroll */
+            max-height: auto; /* Increased height for more visible rows */
             margin-top: 20px;
+            width: 100%; /* Ensures full width */
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 1rem;
-            min-width: 1200px; /* Ensure the table has a minimum width */
+            min-width: 1000px; /* Adjust to a more reasonable value */
         }
 
- /* Navbar Styles */
- .navbar {
+        /* Navbar Styles */
+        .navbar {
             background: linear-gradient(90deg, #4A90E2, #00bcd4);
             color: white;
             width: 100%;
@@ -49,7 +53,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 30px;
-            position: fixed;
+            position: absolute;
             top: 0;
             z-index: 1000;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -99,7 +103,6 @@
             transform: scale(1.1);
         }
 
-
         /* Main Content */
         .container {
             margin-top: 120px;
@@ -119,22 +122,35 @@
         }
 
         /* Button Styles */
-        .btn-group {
-            margin-bottom: 20px;
-
-        }
-
-        .btn-group a, .btn-group button {
-            display: inline-block;
+        .button-signout, .btn, .btn-secondary, .btn-primary, .btn-danger {
             padding: 10px 20px;
             border-radius: 20px;
             color: white;
             font-weight: 600;
             text-decoration: none;
-            margin: 5px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, background-color 0.3s ease;
-            
+            display: inline-block;
+            text-align: center;
+            margin: 10px;
+        }
+
+        .button-signout {
+            background-color: #ff4d4f;
+        }
+
+        .button-signout:hover {
+            background-color: #e04344;
+            transform: scale(1.1);
+        }
+
+        .btn {
+            background-color: #4A90E2;
+        }
+
+        .btn:hover {
+            background-color: #357ABD;
+            transform: scale(1.1);
         }
 
         .btn-secondary {
@@ -142,17 +158,17 @@
         }
 
         .btn-secondary:hover {
-            background-color: #009bb2;
-            transform: scale(1.05);
+            background-color: #00a3c4;
+            transform: scale(1.1);
         }
 
         .btn-primary {
-            background-color: #4A90E2;
+            background-color: #00bcd4;
         }
 
         .btn-primary:hover {
-            background-color: #357ABD;
-            transform: scale(1.05);
+            background-color: #00a3c4;
+            transform: scale(1.1);
         }
 
         .btn-danger {
@@ -161,7 +177,7 @@
 
         .btn-danger:hover {
             background-color: #e04344;
-            transform: scale(1.05);
+            transform: scale(1.1);
         }
 
         /* Table Styles */
@@ -169,20 +185,31 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            font-size: 1rem;
+            overflow-x: auto;
+            
         }
-        
+
         th, td {
             padding: 15px;
             text-align: center;
-            border-bottom: 1px solid #ddd;
+            border: 1px solid #ddd; /* Add border between cells */
+            word-wrap: break-word;
         }
 
         th {
             background-color: #4A90E2;
             color: white;
             font-weight: 600;
+            text-transform: uppercase;
+            position: sticky;
+            top: 0;
+            z-index: 1; /* Keeps header on top when scrolling */
         }
+
+        td {
+            font-size: 0.9rem;
+        }
+
 
         td a {
             color: white;
@@ -214,6 +241,8 @@
                 font-size: 0.9rem;
             }
         }
+
+
     </style>
 </head>
 <body>
@@ -247,24 +276,13 @@
         </div>
         <div class="table-container">
             <table>
+                <!-- In your template -->
                 <thead>
                     <tr>
                         <th>Vendor</th>
-                        <th>GIPV</th>
-                        <th>Cost Reduction Activity</th>
-                        <th>PPKV</th>
-                        <th>DTE</th>
-                        <th>BEEP</th>
-                        <th>TMIEP</th>
-                        <th>Trade Mission</th>
-                        <th>Lean Mgmt.</th>
-                        <th>Kaizen</th>
-                        <th>ICC</th>
-                        <th>Contract. Nego. Skill</th>
-                        <th>SSPOA</th>
-                        <th>eSPO</th>
-                        <th>VIP2</th>
-                        <th>IR4.0</th>
+                        {% for program in programs %}
+                        <th>{{ program.name }}</th>
+                        {% endfor %}
                         <th>Remarks</th>
                         <th>Ongoing Project</th>
                         <th>Status</th>
@@ -275,21 +293,13 @@
                     {% for data in matrix_data %}
                     <tr>
                         <td>{{ data.vendor }}</td>
-                        <td>{{ data.gipv }}</td>
-                        <td>{{ data.cost_reduction_activity }}</td>
-                        <td>{{ data.ppkv }}</td>
-                        <td>{{ data.dte }}</td>
-                        <td>{{ data.beep }}</td>
-                        <td>{{ data.tmiep }}</td>
-                        <td>{{ data.trade_mission }}</td>
-                        <td>{{ data.lean_management }}</td>
-                        <td>{{ data.kaizen }}</td>
-                        <td>{{ data.icc }}</td>
-                        <td>{{ data.contract_negotiation_skill }}</td>
-                        <td>{{ data.sspoa }}</td>
-                        <td>{{ data.espo }}</td>
-                        <td>{{ data.vip2 }}</td>
-                        <td>{{ data.ir40 }}</td>
+                        {% for program in programs %}
+                        <td>
+                            {% with program_value=data.program_values.all|filter_by_program:program %}
+                            {{ program_value.value|default:'' }}
+                            {% endwith %}
+                        </td>
+                        {% endfor %}
                         <td>{{ data.remarks }}</td>
                         <td>{{ data.ongoing_project }}</td>
                         <td>{{ data.status }}</td>

@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'fyp_perodua.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'excel_db',  # Your PostgreSQL database name
+        'NAME': 'perodua_vendor_db',  # Your PostgreSQL database name
         'USER': 'postgres',
         'PASSWORD': 'password123',
         'HOST': 'localhost',  # Or your PostgreSQL server host

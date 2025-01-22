@@ -37,7 +37,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 30px;
-            position: fixed;
+            position: absolute;
             top: 0;
             z-index: 1000;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -166,26 +166,36 @@
         }
 
 
+        /* Table Styles */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            font-size: 1rem;
-            margin-left: auto;
-            margin-right: auto;
+            overflow-x: auto;
+            table-layout: fixed; /* Ensures proper column width */
         }
 
         th, td {
             padding: 15px;
             text-align: center;
-            border-bottom: 1px solid #ddd;
+            border: 1px solid #ddd; /* Add border between cells */
+            word-wrap: break-word;
         }
 
         th {
             background-color: #4A90E2;
             color: white;
             font-weight: 600;
+            text-transform: uppercase;
+            position: sticky;
+            top: 0;
+            z-index: 1; /* Keeps header on top when scrolling */
         }
+
+        td {
+            font-size: 0.9rem;
+        }
+
 
         td a {
             color: #fff;
@@ -242,12 +252,11 @@
                 <tr>
                     <th>Vendor</th>
                     <th>Vendor Code</th>
-                    <th>Grand Total 2019</th>
-                    <th>Grand Total 2020</th>
-                    <th>Grand Total 2021</th>
-                    <th>Grand Total 2022</th>
-                    <th>Grand Total 2023</th>
-                    <th>Total (5 Years)</th>
+                    <!-- Dynamically generate year columns -->
+                    {% for detail in spend_data.first.details.all %}
+                        <th>Grand Total {{ detail.year }}</th>
+                    {% endfor %}
+                    <th>Overall Total</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -256,20 +265,22 @@
                 <tr>
                     <td>{{ data.vendor }}</td>
                     <td>{{ data.vendor_code }}</td>
-                    <td>RM{{ data.grand_total_2019 }}</td>
-                    <td>RM{{ data.grand_total_2020 }}</td>
-                    <td>RM{{ data.grand_total_2021 }}</td>
-                    <td>RM{{ data.grand_total_2022 }}</td>
-                    <td>RM{{ data.grand_total_2023 }}</td>
-                    <td>RM{{ data.overall_5_years }}</td>
+        
+                    <!-- Dynamically display the Grand Totals -->
+                    {% for detail in data.details.all %}
+                        <td>RM{{ detail.grand_total }}</td>
+                    {% endfor %}
+        
+                    <td>RM{{ data.overall_total }}</td>
                     <td>
-                    <a href="{% url 'spend_data_edit' data.pk %}" class="btn btn-primary">Edit</a>
-                    <a href="{% url 'spend_data_delete' data.pk %}" class="btn-danger">Delete</a>
+                        <a href="{% url 'spend_data_edit' data.pk %}" class="btn btn-primary">Edit</a>
+                        <a href="{% url 'spend_data_delete' data.pk %}" class="btn-danger">Delete</a>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+    
 </body>
 </html>

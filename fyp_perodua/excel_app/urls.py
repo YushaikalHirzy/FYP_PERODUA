@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import grade_data_download, spend_data_download,matrix_data_download, grade_data_view, matrix_data_view, spend_data_view, upload_excel, home_view, view_data, login_view, vendor_landscape, register_view, logout_view,delete_all_vendor_grade_data,delete_all_vendor_spend_data, delete_all_vendor_matrix_data, vendor_analytics
+from .views import analytics_view, grade_data_download, spend_data_download,matrix_data_download, grade_data_view, matrix_data_view, spend_data_view, upload_excel, home_view, view_data, login_view, vendor_landscape, register_view, logout_view,delete_all_vendor_grade_data,delete_all_vendor_spend_data, delete_all_vendor_matrix_data
 from .views import (
     VendorGradeDataCreateView, VendorGradeDataUpdateView, VendorGradeDataDeleteView,
     VendorSpendDataCreateView, VendorSpendDataUpdateView, VendorSpendDataDeleteView,
@@ -14,7 +14,7 @@ urlpatterns = [
     path('vendor-grade/', view_data, name='vendor_grade'),
     path('home/', home_view, name='home'), 
     path('logout/', logout_view, name='logout'),
-    path('analytics/', vendor_analytics, name='analytics'),
+    path('analytics/', analytics_view, name='analytics'),
     path('vendor-landscape/', vendor_landscape, name='vendor_landscape'),
     path('grade_data/', grade_data_view, name='grade_data_view'),
     path('spend_data/', spend_data_view, name='spend_data_view'),

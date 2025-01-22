@@ -15,80 +15,142 @@
         body {
             font-family: 'Roboto', sans-serif;
             height: 100vh;
-            background: linear-gradient(135deg, #4A90E2, #9013FE);
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
 
         .register-container {
             background-color: #fff;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            width: 90%;
-            max-width: 400px;
+            padding: 40px 50px;
+            border-radius: 15px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 420px;
             text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         h2 {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             color: #333;
-            font-weight: 500;
+            font-weight: 700;
+            font-size: 2rem;
+            letter-spacing: 0.5px;
         }
 
         form {
             display: flex;
             flex-direction: column;
-            font-size:medium;
+            gap: 20px;
         }
 
-        form input[type="text"],
-        form input[type="password"],
-        form input[type="email"],
-        button {
-            padding: 12px 15px;
-            margin-bottom: 20px;
-            border: none;
-            border-radius: 5px;
-            font-size: 1rem;
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
             width: 100%;
         }
 
-        form input[type="text"],
-        form input[type="password"],
-        form input[type="email"] {
-            background-color: #f4f4f4;
-            border: 1px solid #ddd;
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1rem;
         }
 
-        button {
-            margin-top: 30px;
-            background-color: #4A90E2;
-            color: #fff;
+        .form-group input {
+            padding: 14px 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f7f7f7;
             font-size: 1rem;
-            font-weight: 500;
+            color: #555;
+            transition: border-color 0.3s, background-color 0.3s;
+            width: 100%;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2575fc;
+            background-color: #fff;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .valid-message {
+            color: green;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .button-wrapper {
+            position: relative;
+        }
+
+        /* Button Styles */
+        button {
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            background-color: #6a11cb;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
         }
 
         button:hover {
-            background-color: #357ABD;
+            background-color: #2575fc;
+            transform: translateY(-2px);
         }
 
         .login-link {
-            font-size: 0.9rem;
-            color: #555;
+            font-size: 0.95rem;
+            color: #777;
+            margin-top: 15px;
         }
 
         .login-link a {
-            color: #9013FE;
+            color: #6a11cb;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
+            transition: color 0.3s;
         }
 
         .login-link a:hover {
+            color: #2575fc;
             text-decoration: underline;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 480px) {
+            .register-container {
+                padding: 30px 40px;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+            }
         }
     </style>
 </head>
@@ -96,14 +158,108 @@
 
     <div class="register-container">
         <h2>Register</h2>
-        <form method="POST">
+        <form method="POST" id="registerForm">
             {% csrf_token %}
-            {{ form.as_p }}
+            
+            <!-- Username Field -->
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Username</label>
+                {{ form.username }}
+                <div id="username-feedback"></div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}">Password</label>
+                {{ form.password1 }}
+                <div id="password-feedback"></div>
+            </div>
+
+            <!-- Confirm Password Field -->
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+                {{ form.password2 }}
+                <div id="confirm-password-feedback"></div>
+            </div>
+
+            <!-- Submit Button -->
             <button type="submit">Register</button>
         </form>
+        
         <p class="login-link">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const usernameField = document.querySelector('#id_username');
+            const passwordField = document.querySelector('#id_password1');
+            const confirmPasswordField = document.querySelector('#id_password2');
+            
+            // Function to validate the username
+            function validateUsername() {
+                const username = usernameField.value;
+                const feedback = document.querySelector('#username-feedback');
+                const regex = /^[a-zA-Z0-9_]{3,20}$/; // Basic alphanumeric username validation
+                if (!regex.test(username)) {
+                    feedback.textContent = 'Username should be 3-20 characters and contain only letters, numbers, or underscores.';
+                    feedback.classList.add('error-message');
+                    feedback.classList.remove('valid-message');
+                } else {
+                    feedback.textContent = 'Username is valid!';
+                    feedback.classList.add('valid-message');
+                    feedback.classList.remove('error-message');
+                }
+            }
+    
+            // Function to validate the password with new requirements
+            function validatePassword() {
+                const password = passwordField.value;
+                const feedback = document.querySelector('#password-feedback');
+                const minLength = 8;
+                const hasUpperCase = /[A-Z]/.test(password); // Check for at least one uppercase letter
+                const hasNumber = /\d/.test(password); // Check for at least one number
+    
+                if (password.length < minLength) {
+                    feedback.textContent = `Password must be at least ${minLength} characters long.`;
+                    feedback.classList.add('error-message');
+                    feedback.classList.remove('valid-message');
+                } else if (!hasUpperCase) {
+                    feedback.textContent = 'Password must contain at least one uppercase letter.';
+                    feedback.classList.add('error-message');
+                    feedback.classList.remove('valid-message');
+                } else if (!hasNumber) {
+                    feedback.textContent = 'Password must contain at least one number.';
+                    feedback.classList.add('error-message');
+                    feedback.classList.remove('valid-message');
+                } else {
+                    feedback.textContent = 'Password is strong!';
+                    feedback.classList.add('valid-message');
+                    feedback.classList.remove('error-message');
+                }
+            }
+    
+            // Function to check if passwords match
+            function validateConfirmPassword() {
+                const password = passwordField.value;
+                const confirmPassword = confirmPasswordField.value;
+                const feedback = document.querySelector('#confirm-password-feedback');
+                if (password !== confirmPassword) {
+                    feedback.textContent = 'Passwords do not match.';
+                    feedback.classList.add('error-message');
+                    feedback.classList.remove('valid-message');
+                } else {
+                    feedback.textContent = 'Passwords match!';
+                    feedback.classList.add('valid-message');
+                    feedback.classList.remove('error-message');
+                }
+            }
+    
+            // Event Listeners for real-time validation
+            usernameField.addEventListener('input', validateUsername);
+            passwordField.addEventListener('input', validatePassword);
+            confirmPasswordField.addEventListener('input', validateConfirmPassword);
+        });
+    </script>
+    
 </body>
 </html>
-

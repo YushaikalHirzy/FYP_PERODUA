@@ -1,4 +1,5 @@
 {% load static %}
+{% load vendor_extras %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,8 +29,8 @@
             padding-top: 150px;
         }
 
-         /* Navbar Styles */
-         .navbar {
+        /* Navbar Styles */
+        .navbar {
             background: linear-gradient(90deg, #4A90E2, #00bcd4);
             color: white;
             width: 100%;
@@ -37,7 +38,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 30px;
-            position: fixed;
+            position: absolute;
             top: 0;
             z-index: 1000;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -94,7 +95,7 @@
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
             padding: 40px 30px;
             width: 90%;
-            max-width: 1200px;
+            max-width: 1500px;
             margin-bottom: 50px;
         }
 
@@ -156,12 +157,14 @@
             border-collapse: collapse;
             margin-top: 20px;
             overflow-x: auto;
+            table-layout: fixed; /* Ensures proper column width */
         }
 
         th, td {
             padding: 15px;
             text-align: center;
-            border-bottom: 1px solid #ddd;
+            border: 1px solid #ddd; /* Add border between cells */
+            word-wrap: break-word;
         }
 
         th {
@@ -169,11 +172,15 @@
             color: white;
             font-weight: 600;
             text-transform: uppercase;
+            position: sticky;
+            top: 0;
+            z-index: 1; /* Keeps header on top when scrolling */
         }
 
         td {
             font-size: 0.9rem;
         }
+
 
         td a {
             color: white;
@@ -190,10 +197,11 @@
             background-color: #357ABD;
         }
 
+
         /* Status Color Classes */
         .green {
             background-color: #7ED321;
-            color: rgb(36, 68, 22);
+            color: rgb(0, 0, 0);
             padding: 8px 12px;
             border-radius: 5px;
             font-weight: bold;
@@ -201,7 +209,7 @@
 
         .yellow {
             background-color: #F8E71C;
-            color: rgb(102, 97, 32);
+            color: rgb(0, 0, 0);
             padding: 8px 12px;
             border-radius: 5px;
             font-weight: bold;
@@ -209,7 +217,7 @@
 
         .red {
             background-color: #D0021B;
-            color: rgb(88, 28, 28);
+            color: rgb(255, 255, 255);
             padding: 8px 12px;
             border-radius: 5px;
             font-weight: bold;
@@ -289,29 +297,31 @@
                     <th>Vendor</th>
                     <th>Short Name</th>
                     <th>Vendor Code</th>
-                    <th>Overall 2018</th>
-                    <th>Overall 2019</th>
-                    <th>Overall 2020</th>
-                    <th>Overall 2021</th>
-                    <th>Overall 2022</th>
+                    {% for year in years %}
+                    <th>Overall {{ year }}</th>
+                    {% endfor %}
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                {% for data in grade_data %}
+                {% for vendor in vendor_grade_data %}
                 <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ data.vendor }}</td>
-                    <td>{{ data.short_name }}</td>
-                    <td>{{ data.vendor_code }}</td>
-                    <td class="{% if data.overall_2018 == 'G' %}green{% elif data.overall_2018 == 'Y' %}yellow{% elif data.overall_2018 == 'R' %}red{% endif %}">{{ data.overall_2018 }}</td>
-                    <td class="{% if data.overall_2019 == 'G' %}green{% elif data.overall_2019 == 'Y' %}yellow{% elif data.overall_2019 == 'R' %}red{% endif %}">{{ data.overall_2019 }}</td>
-                    <td class="{% if data.overall_2020 == 'G' %}green{% elif data.overall_2020 == 'Y' %}yellow{% elif data.overall_2020 == 'R' %}red{% endif %}">{{ data.overall_2020 }}</td>
-                    <td class="{% if data.overall_2021 == 'G' %}green{% elif data.overall_2021 == 'Y' %}yellow{% elif data.overall_2021 == 'R' %}red{% endif %}">{{ data.overall_2021 }}</td>
-                    <td class="{% if data.overall_2022 == 'G' %}green{% elif data.overall_2022 == 'Y' %}yellow{% elif data.overall_2022 == 'R' %}red{% endif %}">{{ data.overall_2022 }}</td>
+                    <td>{{ vendor.num }}</td>
+                    <td>{{ vendor.vendor }}</td>
+                    <td>{{ vendor.short_name }}</td>
+                    <td>{{ vendor.vendor_code }}</td>
+                    {% for year in years %}
                     <td>
-                        <a href="{% url 'grade_data_edit' data.pk %}" class="btn-primary">Edit</a>
-                        <a href="{% url 'grade_data_delete' data.pk %}" class="btn-danger">Delete</a>
+                        {% with vendor.year_grades|get_grade:year as grade %}
+                        <span class="{% if grade == 'G' %}green{% elif grade == 'Y' %}yellow{% elif grade == 'R' %}red{% else %}orange{% endif %}">
+                            {{ grade }}
+                        </span>
+                        {% endwith %}
+                    </td>
+                    {% endfor %}
+                    <td>
+                        <a href="{% url 'grade_data_edit' vendor.pk %}" class="btn btn-primary">Edit</a>
+                        <a href="{% url 'grade_data_delete' vendor.pk %}" class="btn-danger">Delete</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -320,21 +330,18 @@
     </div>
 
     <!-- Scroll to Top Button -->
-    <button id="scrollToTopBtn" onclick="scrollToTop()">↑</button>
+    <button id="scrollToTopBtn" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
 
     <script>
-        // Scroll to Top Button Logic
-        const scrollToTopBtn = document.getElementById("scrollToTopBtn");
-        window.onscroll = function() {
-            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-                scrollToTopBtn.style.display = "block";
-            } else {
-                scrollToTopBtn.style.display = "none";
-            }
-        };
+        // Scroll to Top Button Script
+        const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+
+        window.addEventListener('scroll', () => {
+            scrollToTopBtn.style.display = window.pageYOffset > 100 ? 'block' : 'none';
+        });
 
         function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
 </body>
