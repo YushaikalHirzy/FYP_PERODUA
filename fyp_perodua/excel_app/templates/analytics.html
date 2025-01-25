@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <title>Vendor Analytics Dashboard</title>
     <style>
         /* General Reset */
@@ -96,9 +97,10 @@
 
         h1 {
             font-size: 2.5rem;
-            font-weight: 600;
+            font-weight: 700;
             color: #4A90E2;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
         }
 
         /* Chart Section */
@@ -150,9 +152,34 @@
                 font-size: 1.5rem;
             }
         }
+
+        /* Button Styles */
+        .btn-group {
+            margin-bottom: 20px;
+        }
+
+        .btn-group a, .btn-group button {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            margin: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .btn-secondary {
+            background-color: #00bcd4;
+        }
+
+        .btn-secondary:hover {
+            background-color: #009bb2;
+            transform: scale(1.05);
+        }
     </style>
 </head>
-
 <body>
     <!-- Navbar -->
     <div class="navbar">
@@ -174,33 +201,52 @@
     <header>
         <h1>Vendor Analytics Dashboard</h1>
     </header>
-
+        <!-- Download Button -->
+        <div class="btn-group">
+            <button id="download-pdf" class="btn-secondary">Download as PDF</button>
+        </div>
     <!-- Main Content Section -->
     <div class="container">
-        <!-- Chart 1 -->
-        <div class="chart-container">
+        <!-- Chart Containers -->
+        <div class="chart-container" id="chart-container1">
             <h2>Vendor Grades Distribution Over Years</h2>
             <div id="chart1">{{ chart1|safe }}</div>
         </div>
 
-        <!-- Chart 4 -->
-        <div class="chart-container">
+        <div class="chart-container" id="chart-container4">
             <h2>Overall Grade Count</h2>
             <div id="chart4">{{ chart4|safe }}</div>
         </div>
 
-        <!-- Chart 2 -->
-        <div class="chart-container">
+        <div class="chart-container" id="chart-container2">
             <h2>Top 10 Vendor Spend Distribution</h2>
             <div id="chart2">{{ chart2|safe }}</div>
         </div>
 
-        <!-- Chart 3 -->
-        <div class="chart-container">
+        <div class="chart-container" id="chart-container3">
             <h2>Vendor Spend Distribution Over Years</h2>
             <div id="chart3">{{ chart3|safe }}</div>
         </div>
-
     </div>
+
+    <script>
+        document.getElementById('download-pdf').addEventListener('click', async () => {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+            const chartContainers = document.querySelectorAll('.chart-container');
+            
+            for (let i = 0; i < chartContainers.length; i++) {
+                const container = chartContainers[i];
+                const canvas = await html2canvas(container);
+                const imgData = canvas.toDataURL('image/png');
+
+                // Add the image to the PDF
+                if (i > 0) pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 10, 10, 190, 0); // Adjust dimensions as needed
+            }
+
+            pdf.save('Vendor_Analytics_Dashboard.pdf');
+        });
+    </script>
 </body>
 </html>

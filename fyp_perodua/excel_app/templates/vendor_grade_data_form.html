@@ -81,6 +81,7 @@
                                     <td>
                                         {% if year_grade_form.instance.pk %}
                                             <button type="button" class="delete-btn" aria-label="Delete" onclick="deleteRow(this)">×</button>
+                                            {{ year_grade_form.DELETE }} 
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -92,7 +93,6 @@
                 
                 <div class="d-flex justify-content-between mb-3">
                     <button type="button" class="btn btn-secondary" id="add-year-grade">Add Another Year</button>
-                    <input type="text" name="overall_total" placeholder="Overall Total" class="form-control w-25" readonly>
                 </div>
                 
                 <div class="d-flex justify-content-end gap-2">
@@ -136,44 +136,44 @@
             const addButton = document.getElementById('add-year-grade');
             if (addButton) {
                 addButton.addEventListener('click', function() {
-                    const tbody = document.querySelector('#year-grades-table tbody');
-                    const rowCount = tbody.rows.length;
+                const tbody = document.querySelector('#year-grades-table tbody');
+                const totalForms = document.querySelector('[name="year_grades-TOTAL_FORMS"]');
+                const rowCount = parseInt(totalForms.value);
 
-                    const newRow = document.createElement('tr');
-                    newRow.innerHTML = `
-                        <td>
-                            <input type="text" name="year_grades-${rowCount}-year" class="form-control">
-                        </td>
-                        <td>
-                            <select name="year_grades-${rowCount}-grade" class="form-control">
-                                <option value="G">G</option>
-                                <option value="Y">Y</option>
-                                <option value="R">R</option>
-                            </select>
-                        </td>
-                        <td>
-                            <button type="button" class="delete-btn" aria-label="Delete" onclick="deleteRow(this)">×</button>
-                        </td>
-                    `;
-                    tbody.appendChild(newRow);
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>
+                        <input type="text" name="year_grades-${rowCount}-year" id="id_year_grades-${rowCount}-year" class="form-control">
+                    </td>
+                    <td>
+                        <select name="year_grades-${rowCount}-grade" id="id_year_grades-${rowCount}-grade" class="form-control">
+                            <option value="G">G</option>
+                            <option value="Y">Y</option>
+                            <option value="R">R</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button type="button" class="delete-btn" aria-label="Delete" onclick="deleteRow(this)">×</button>
+                    </td>
+                `;
+                tbody.appendChild(newRow);
 
-                    // Recalculate total after adding a row
-                    calculateTotal();
-                });
+                // Increment the total forms count
+                totalForms.value = rowCount + 1;
+            });
             }
         });
 
         // Function to delete a row
         function deleteRow(button) {
             const row = button.closest('tr');
-            row.remove();
-
-            // Recalculate the total after deleting a row
-            const grandTotalInputs = document.querySelectorAll('input[name*="grand_total"]');
-            if (grandTotalInputs.length === 0) {
-                document.querySelector('input[name="overall_total"]').value = '';
+            const deleteCheckbox = row.querySelector('input[name$="-DELETE"]');
+            
+            if (deleteCheckbox) {
+                deleteCheckbox.checked = true;
+                row.style.display = 'none'; // Hide the row
             } else {
-                calculateTotal();
+                row.remove();
             }
         }
     </script>

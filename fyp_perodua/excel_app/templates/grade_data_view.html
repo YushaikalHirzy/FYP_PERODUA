@@ -290,10 +290,10 @@
                 <button type="submit" class="btn-danger" onclick="return confirm('Are you sure you want to delete all vendor data? This action cannot be undone!')">Delete All Vendors</button>
             </form>
         </div>
+        {% if vendor_grade_data %}
         <table>
             <thead>
                 <tr>
-                    <th>No</th>
                     <th>Vendor</th>
                     <th>Short Name</th>
                     <th>Vendor Code</th>
@@ -306,7 +306,6 @@
             <tbody>
                 {% for vendor in vendor_grade_data %}
                 <tr>
-                    <td>{{ vendor.num }}</td>
                     <td>{{ vendor.vendor }}</td>
                     <td>{{ vendor.short_name }}</td>
                     <td>{{ vendor.vendor_code }}</td>
@@ -327,6 +326,12 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% else %}
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle"></i> 
+            No grade data has been added yet. 
+        </div>
+        {% endif %}
     </div>
 
     <!-- Scroll to Top Button -->

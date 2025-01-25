@@ -247,6 +247,7 @@
             <button type="submit" class="btn-danger" onclick="return confirm('Are you sure you want to delete all vendor data? This action cannot be undone!')">Delete All Vendors</button>
         </form>
         </form>
+        {% if spend_data %}
         <table>
             <thead>
                 <tr>
@@ -280,6 +281,12 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% else %}
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle"></i> 
+            No spend data has been added yet. 
+        </div>
+        {% endif %}
     </div>
     
 </body>

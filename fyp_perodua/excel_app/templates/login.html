@@ -1,10 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,66 +16,67 @@
         body {
             font-family: 'Roboto', sans-serif;
             height: 100vh;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            background: linear-gradient(to bottom, #2575fc, #6a11cb);
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
         }
 
         .login-container {
-            background-color: #fff;
-            padding: 40px 50px;
+            background: #ffffff;
+            padding: 50px 40px;
             border-radius: 15px;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 420px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
             text-align: center;
-            animation: fadeIn 0.8s ease-out;
+            width: 100%;
+            max-width: 400px;
+            animation: fadeIn 0.8s ease-in-out;
         }
 
         @keyframes fadeIn {
-            0% {
+            from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(20px);
             }
-            100% {
+            to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
+        .logo img {
+            height: 60px;
+            margin-bottom: 20px;
+        }
+
         h2 {
-            margin-bottom: 25px;
+            font-size: 1.8rem;
             color: #333;
+            margin-bottom: 20px;
             font-weight: 700;
-            font-size: 2rem;
-            letter-spacing: 0.5px;
         }
 
         form {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
         }
 
         form input[type="text"],
         form input[type="password"] {
-            padding: 14px 20px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            background-color: #f7f7f7;
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
             font-size: 1rem;
-            color: #555;
-            transition: border-color 0.3s, background-color 0.3s;
+            transition: 0.3s;
         }
 
         form input[type="text"]:focus,
         form input[type="password"]:focus {
             outline: none;
             border-color: #2575fc;
-            background-color: #fff;
+            box-shadow: 0 0 5px rgba(37, 117, 252, 0.5);
         }
 
         button {
@@ -87,6 +89,7 @@
             background-color: #6a11cb;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
         }
 
         button:hover {
@@ -95,16 +98,15 @@
         }
 
         .register-link {
-            font-size: 0.95rem;
-            color: #777;
             margin-top: 15px;
+            font-size: 0.95rem;
+            color: #555;
         }
 
         .register-link a {
             color: #6a11cb;
             text-decoration: none;
             font-weight: 600;
-            transition: color 0.3s;
         }
 
         .register-link a:hover {
@@ -114,24 +116,25 @@
 
         @media (max-width: 480px) {
             .login-container {
-                padding: 30px 40px;
+                padding: 30px 20px;
             }
 
             h2 {
-                font-size: 1.6rem;
+                font-size: 1.5rem;
+            }
+
+            .logo img {
+                height: 50px;
             }
         }
     </style>
-    <script>
-        window.history.pushState(null, null, window.location.href);
-        window.onpopstate = function() {
-            window.history.pushState(null, null, window.location.href);
-        }
-    </script>
 </head>
 <body>
 
     <div class="login-container">
+        <div class="logo">
+            <img src="{% static 'excel_app/images/LOGO PERODUA.png' %}" alt="Perodua Logo">
+        </div>
         <h2>Login</h2>
         <form method="POST">
             {% csrf_token %}

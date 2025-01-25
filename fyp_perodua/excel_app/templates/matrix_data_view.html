@@ -242,7 +242,6 @@
             }
         }
 
-
     </style>
 </head>
 <body>
@@ -269,19 +268,29 @@
             <a href="{% url 'view_data' %}" class="btn-secondary">Back to Data Overview</a>
             <a href="{% url 'matrix_data_download' %}" class="btn-secondary">Download as PDF</a>
             <a href="{% url 'matrix_data_add' %}" class="btn-primary">Add New Vendor</a>
+            <a href="{% url 'add_program' %}" class="btn-primary">Add New Program</a>
             <form method="POST" action="{% url 'delete_all_matrix_data' %}" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit" class="btn-danger" onclick="return confirm('Are you sure you want to delete all vendor data? This action cannot be undone!')">Delete All Vendors</button>
             </form>
         </div>
         <div class="table-container">
+            {% if matrix_data %}
             <table>
                 <!-- In your template -->
                 <thead>
                     <tr>
                         <th>Vendor</th>
                         {% for program in programs %}
-                        <th>{{ program.name }}</th>
+                        <th>
+                            {{ program.name }}
+                            <a href="{% url 'delete_program' program.pk %}" 
+                               class="btn-danger" 
+                               style="padding: 4px 8px; margin-left: 5px;"
+                               onclick="return confirm('Are you sure you want to delete this program? All associated data will be removed.')">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </th>
                         {% endfor %}
                         <th>Remarks</th>
                         <th>Ongoing Project</th>
@@ -311,6 +320,12 @@
                     {% endfor %}
                 </tbody>
             </table>
+            {% else %}
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle"></i> 
+                No matrix data has been added yet. 
+            </div>
+            {% endif %}
         </div>
     </div>
 </body>

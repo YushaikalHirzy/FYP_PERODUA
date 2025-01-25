@@ -76,6 +76,7 @@
                                     <td>
                                         {% if detail_form.instance.pk %}
                                             <button type="button" class="delete-btn" aria-label="Delete">X</button>
+                                            {{ detail_form.DELETE }}
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -154,7 +155,7 @@
                     // Update the total form count in the management form
                     const totalForms = document.querySelector('[name="spend_details-TOTAL_FORMS"]');
                     if (totalForms) {
-                        totalForms.value = rowCount + 1;
+                        totalForms.value = parseInt(totalForms.value) + 1;
                     }
 
                     // Recalculate total after adding new row
@@ -177,11 +178,11 @@
             deleteButtons.forEach(button => {
                 button.addEventListener('click', function(e) {
                     const row = e.target.closest('tr');
-                    row.remove();
-                    // Update the total forms count after removal
-                    const totalForms = document.querySelector('[name="spend_details-TOTAL_FORMS"]');
-                    if (totalForms) {
-                        totalForms.value = document.querySelectorAll('.spend-detail-row').length;
+                    // Find the corresponding delete checkbox
+                    const deleteCheckbox = row.querySelector('input[name$="-DELETE"]');
+                    if (deleteCheckbox) {
+                        deleteCheckbox.checked = true;
+                        row.style.display = 'none'; // Hide the row
                     }
                     calculateTotal(); // Recalculate after removal
                 });
