@@ -74,16 +74,35 @@ WSGI_APPLICATION = 'fyp_perodua.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'perodua_vendor_db',  # Your PostgreSQL database name
+#         'USER': 'postgres',
+#         'PASSWORD': 'password123',
+#         'HOST': 'localhost',  # Or your PostgreSQL server host
+#         'PORT': '5433',       # Default PostgreSQL port
+#     }
+# }
+
+import os
+from urllib.parse import urlparse
+
+# Parse DATABASE_URL environment variable
+database_url = os.environ.get('DATABASE_URL', 'postgresql://perodua_db_user:k8HA8iHpvZF9QQqHzKgLRz1op1FN7SzS@dpg-cui5k4ij1k6c73apg87g-a.singapore-postgres.render.com/perodua_db')
+url = urlparse(database_url)
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'perodua_vendor_db',  # Your PostgreSQL database name
-        'USER': 'postgres',
-        'PASSWORD': 'password123',
-        'HOST': 'localhost',  # Or your PostgreSQL server host
-        'PORT': '5433',       # Default PostgreSQL port
+        'NAME': url.path[1:],  # Strip out the leading "/"
+        'USER': url.username,
+        'PASSWORD': url.password,
+        'HOST': url.hostname,
+        'PORT': url.port,
     }
 }
+
 
 
 # Password validation
