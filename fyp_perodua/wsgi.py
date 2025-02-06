@@ -14,6 +14,6 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fyp_perodua.fyp_perodua.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fyp_perodua.settings')
 
 application = get_wsgi_application()
