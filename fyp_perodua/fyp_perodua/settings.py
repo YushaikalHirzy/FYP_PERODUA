@@ -10,7 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+import dj_database_url
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -85,24 +88,9 @@ WSGI_APPLICATION = 'fyp_perodua.wsgi.application'
 #     }
 # }
 
-import os
-from urllib.parse import urlparse
-
-# Parse DATABASE_URL environment variable
-database_url = os.environ.get('DATABASE_URL', 'postgresql://perodua_db_user:k8HA8iHpvZF9QQqHzKgLRz1op1FN7SzS@dpg-cui5k4ij1k6c73apg87g-a.singapore-postgres.render.com/perodua_db')
-url = urlparse(database_url)
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': url.path[1:],  # Strip out the leading "/"
-        'USER': url.username,
-        'PASSWORD': url.password,
-        'HOST': url.hostname,
-        'PORT': url.port,
-    }
+    "default": dj_database_url.parse(os.environ.get("DATABASE_URL", "postgresql://perodua_db_0m9x_user:wyJ9cyS4RXrd9yfg0m4ZZvubFiM4VWNG@dpg-cui7mhtds78s73du3on0-a.singapore-postgres.render.com/perodua_db_0m9x"))
 }
-
 
 
 # Password validation

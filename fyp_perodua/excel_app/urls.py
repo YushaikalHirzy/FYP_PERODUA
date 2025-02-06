@@ -5,6 +5,7 @@ from .views import (
     VendorSpendDataCreateView, VendorSpendDataUpdateView, VendorSpendDataDeleteView,
     VendorMatrixDataCreateView, VendorMatrixDataUpdateView, VendorMatrixDataDeleteView
 )
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('', login_view, name='login'),  # Redirect root to the login page
@@ -47,3 +48,5 @@ urlpatterns = [
     path('delete-all-vendors/', delete_all_vendors, name='delete_all_vendors'),
     
 ]
+
+urlpatterns += staticfiles_urlpatterns()
