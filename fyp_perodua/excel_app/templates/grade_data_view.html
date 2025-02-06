@@ -308,7 +308,7 @@
                 <tr>
                     <td>{{ vendor.vendor }}</td>
                     <td>{{ vendor.short_name }}</td>
-                    <td>{{ vendor.vendor_code }}</td>
+                    <td>{{ vendor.vendor.code }}</td>
                     {% for year in years %}
                     <td>
                         {% with vendor.year_grades|get_grade:year as grade %}

@@ -262,6 +262,29 @@
         </div>
         <a href="{% url 'logout' %}" class="button-signout">Sign Out</a>
     </div>
+    
+    {% if messages %}
+    <div style="width: 100%; max-width: 1200px; margin: 20px auto;">
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %}"
+             style="padding: 15px;
+                    margin-bottom: 20px;
+                    border: 1px solid transparent;
+                    border-radius: 4px;
+                    {% if message.tags == 'success' %}
+                    background-color: #d4edda;
+                    border-color: #c3e6cb;
+                    color: #155724;
+                    {% else %}
+                    background-color: #f8d7da;
+                    border-color: #f5c6cb;
+                    color: #721c24;
+                    {% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
     <!-- Main Container -->
     <div class="container">
@@ -293,6 +316,9 @@
             </a>
             <a href="{% url 'analytics' %}" class="button">
                 <i class="fas fa-chart-bar"></i> Vendor Analytics
+                <a href="#" class="button" style="background: linear-gradient(90deg, #dc3545, #c82333);" onclick="confirmDelete()">
+                    <i class="fas fa-trash"></i> Clear All Data
+                </a>
             </a>
         </div>
     </div>
@@ -301,5 +327,13 @@
     <div class="footer">
         <p>&copy; 2024 Perodua. All Rights Reserved.</p>
     </div>
+
+    <script>
+        function confirmDelete() {
+            if (confirm('Are you sure you want to delete all vendor data? This action cannot be undone.')) {
+                window.location.href = "{% url 'delete_all_vendors' %}";
+            }
+        }
+        </script>
 </body>
 </html>

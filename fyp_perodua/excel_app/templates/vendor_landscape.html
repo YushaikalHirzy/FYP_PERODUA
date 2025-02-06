@@ -189,24 +189,39 @@
         }
     
         /* Vendor Grade Colors */
-        .grade-G {
-            background-color: #a7f3a7;
-            color: #333;
-        }
-    
-        .grade-Y {
-            background-color: #ffcc66;
-            color: #333;
-        }
-    
-        .grade-R {
-            background-color: #e48484;
+        .grade-R-1 {
+            background-color: #8B0000;  /* Darkest Red for Category C 1 */
             color: white;
         }
-    
+
+        .grade-R-2 {
+            background-color: #B22222;  /* Darker Red for Category C 2 */
+            color: white;
+        }
+
+        .grade-R-3 {
+            background-color: #FF0000;  /* Bright Red for Category C 3 */
+            color: white;
+        }
+
+        .grade-Y-1, .grade-Y-2, .grade-Y-3 {
+            background-color: #FFD700;  /* Bright Yellow for all Category B */
+            color: black;
+        }
+
+        .grade-G-1 {
+            background-color: #00FF00;  /* Bright Green for Category A 1 */
+            color: black;
+        }
+
+        .grade-G-2 {
+            background-color: #008000;  /* Dark Green for Category A 2 */
+            color: white;
+        }
+
         .grade-default {
-            background-color: #d9d9d9;
-            color: #333;
+            background-color: #D3D3D3;  /* Light Grey for Not Specified */
+            color: black;
         }
     
         /* Modal and Overlay */
@@ -434,7 +449,7 @@
                     Vendor Grade →<br>Spend Value ↓
                 </th>
                 {% for grade in grid %}
-                <th class="{% if grade == 'Category A' %}grade-G{% elif grade == 'Category B' %}grade-Y{% elif grade == 'Category C' %}grade-R{% else %}grade-default{% endif %}">
+                <th class="{% if 'Category C 1' in grade %}grade-R-1{% elif 'Category C 2' in grade %}grade-R-2{% elif 'Category C 3' in grade %}grade-R-3{% elif 'Category B' in grade %}grade-Y-1{% elif 'Category A 1' in grade %}grade-G-1{% elif 'Category A 2' in grade %}grade-G-2{% else %}grade-default{% endif %}">
                     {{ grade }}
                 </th>
                 {% endfor %}
@@ -445,8 +460,7 @@
             <tr>
                 <td>{{ spend_label }}</td>
                 {% for grade, spends in grid.items %}
-                <td class="{% if grade == 'Category C' %}grade-R{% elif grade == 'Category B' %}grade-Y{% elif grade == 'Category A' %}grade-G{% else %}grade-default{% endif %}">
-                    {% if spend_label in spends %}
+                <td class="{% if 'Category C 1' in grade %}grade-R-1{% elif 'Category C 2' in grade %}grade-R-2{% elif 'Category C 3' in grade %}grade-R-3{% elif 'Category B' in grade %}grade-Y-1{% elif 'Category A 1' in grade %}grade-G-1{% elif 'Category A 2' in grade %}grade-G-2{% else %}grade-default{% endif %}">                    {% if spend_label in spends %}
                     <ul>
                         {% for vendor_data in spends|dict_get:spend_label %}
                         <li onclick="showVendorDetails('{{ vendor_data.vendor }}', '{{ vendor_data.latest_grades }}', '{{ vendor_data.spend_value }}', '{{ grade }}')">

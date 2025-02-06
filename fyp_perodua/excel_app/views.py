@@ -22,7 +22,7 @@ from django.template.loader import get_template
 
 from xhtml2pdf import pisa
 
-from .models import ProgramAttribute, VendorGradeData, VendorProgramValue, VendorSpendData, VendorMatrixData, VendorSpendDetail, VendorYearGrade
+from .models import ProgramAttribute, Vendor, VendorGradeData, VendorProgramValue, VendorSpendData, VendorMatrixData, VendorSpendDetail, VendorYearGrade
 from .forms import VendorGradeDataForm, VendorProgramValueForm, VendorSpendDataForm, VendorMatrixDataForm, VendorSpendDetailForm, VendorYearGradeForm
 
 
@@ -38,7 +38,8 @@ from .models import VendorYearGrade, VendorSpendData
 def analytics_view(request):
     # Example Data Processing
     vendor_grades = VendorYearGrade.objects.values('year', 'grade')
-    vendor_spend = VendorSpendData.objects.values('vendor', 'overall_total')
+    vendor_spend = VendorSpendData.objects.select_related('vendor').values('vendor__name', 'overall_total')
+
 
     # Check if vendor_grades or vendor_spend is empty
     if not vendor_grades or not vendor_spend:
@@ -74,13 +75,15 @@ def analytics_view(request):
         margin=dict(l=0, r=0, t=40, b=0)  # Makes the chart more responsive
     )
 
+
+
     # Simplify Vendor Spend Distribution
     spend_data = [data['overall_total'] for data in vendor_spend if data['overall_total']]
-    vendor_name = [data['vendor'] for data in vendor_spend if data['overall_total']]
+    vendor_name = [data['vendor__name'] for data in vendor_spend if data['overall_total']]
 
     # Convert to DataFrame for easier aggregation
     spend_df = pd.DataFrame({
-        'Vendor Name': vendor_name,
+        'Vendor Name': vendor_name, 
         'Overall Spend': spend_data
     })
 
@@ -98,18 +101,26 @@ def analytics_view(request):
         top_vendors = spend_df.nlargest(10, 'Overall Spend')
 
         # Plotly bar chart: Top 10 Vendor Spend Distribution
-        fig2 = px.bar(top_vendors, 
-                      x='Vendor Name', 
-                      y='Overall Spend',
-                      title="Top 10 Vendor Spend Distribution",
-                      labels={'Overall Spend': 'Spend (RM)', 'Vendor Code': 'Vendor Code'},
-                      hover_data={'Vendor Name': True, 'Overall Spend': True})  # Add hover information
+        fig2 = px.bar(
+            top_vendors, 
+            x='Vendor Name',  # Ensure x-axis uses 'Vendor Name'
+            y='Overall Spend', 
+            title="Top 10 Vendor Spend Distribution", 
+            labels={
+                'Overall Spend': 'Spend (RM)', 
+                'Vendor Name': 'Vendor Name'  # Correct label for x-axis
+            },
+            hover_data={'Vendor Name': True, 'Overall Spend': True}
+        )
 
+        # Add hover information
         fig2.update_traces(marker_color='light blue', marker_line_color='black')
         fig2.update_layout(
-            autosize=True,
-            margin=dict(l=0, r=0, t=40, b=0),
+            autosize=True, 
+            margin=dict(l=0, r=0, t=40, b=0)
         )
+
+
 
     # Vendor Spend by Year (Line chart)
     spend_by_year = VendorSpendDetail.objects.values('year', 'grand_total')
@@ -195,6 +206,11 @@ class VendorGradeDataCreateView(CreateView):
     template_name = 'vendor_grade_data_form.html'
     success_url = reverse_lazy('grade_data_view')
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.pop('instance', None)
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.POST:
@@ -270,6 +286,11 @@ class VendorSpendDataCreateView(CreateView):
     form_class = VendorSpendDataForm
     template_name = 'vendor_spend_data_form.html'
     success_url = reverse_lazy('spend_data_view')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.pop('instance', None)
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -351,6 +372,11 @@ class VendorMatrixDataCreateView(CreateView):
     form_class = VendorMatrixDataForm
     template_name = 'vendor_matrix_data_form.html'
     success_url = reverse_lazy('matrix_data_view')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.pop('instance', None)
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -485,10 +511,12 @@ def home_view(request):
     else:
         avg_vendor_grade = 'N/A'
 
+
+
     # Render Charts for Home Page
     return render(request, 'home.html', {
         'total_spend': total_spend,
-        'avg_vendor_grade': avg_vendor_grade
+        'avg_vendor_grade': avg_vendor_grade,
     })
 
 
@@ -532,41 +560,31 @@ def handle_vendor_grade_data(grade_file):
         if pd.isna(row.get('NO')) or pd.isna(row.get('VENDOR')):
             continue
 
-        existing_vendor = VendorGradeData.objects.filter(
-            num=row.get('NO', None),
-            vendor=row.get('VENDOR', None),
-            short_name=row.get('SHORT NAME', None),
-            vendor_code=row.get('VENDOR CODE 2023', None),
-        ).first()
+        # Find existing vendor or create a new one, updating if name/code changes
+        vendor, created = Vendor.objects.update_or_create(
+            code=row.get('VENDOR CODE 2023', None),
+            defaults={
+                'name': row.get('VENDOR', None)
+            }
+        )
 
-        if existing_vendor:
-            for year_col in year_columns:
-                year = int(year_col.split()[-1])
-                grade = row.get(year_col, None)
-                grade = grade if grade in ["G", "Y", "R"] else None
-                if grade:
-                    VendorYearGrade.objects.update_or_create(
-                        vendor_grade=existing_vendor,
-                        year=year,
-                        defaults={'grade': grade},
-                    )
-        else:
-            vendor_grade = VendorGradeData.objects.create(
-                num=row.get('NO', None),
-                vendor=row.get('VENDOR', None),
-                short_name=row.get('SHORT NAME', None),
-                vendor_code=row.get('VENDOR CODE 2023', None),
-            )
-            for year_col in year_columns:
-                year = int(year_col.split()[-1])
-                grade = row.get(year_col, None)
-                grade = grade if grade in ["G", "Y", "R"] else None
-                if grade:
-                    VendorYearGrade.objects.create(
-                        vendor_grade=vendor_grade,
-                        year=year,
-                        grade=grade,
-                    )
+        # Create VendorGradeData linked to Vendor
+        vendor_grade, _ = VendorGradeData.objects.get_or_create(
+            vendor=vendor,
+            defaults={'short_name': row.get('SHORT NAME', None)}
+        )
+
+        # Create or update VendorYearGrade
+        for year_col in year_columns:
+            year = int(year_col.split()[-1])
+            grade = row.get(year_col, None)
+            grade = grade if grade in ["G", "Y", "R"] else None
+            if grade:
+                VendorYearGrade.objects.update_or_create(
+                    vendor_grade=vendor_grade,
+                    year=year,
+                    defaults={'grade': grade},
+                )
 
 
 def handle_vendor_spend_data(spend_file):
@@ -577,46 +595,32 @@ def handle_vendor_spend_data(spend_file):
         if pd.isna(row.get('Vendor')) or pd.isna(row.get('Vendor Code')):
             continue
 
-        overall_total = 0
-        existing_spend_data = VendorSpendData.objects.filter(
-            vendor=row.get('Vendor', None),
-            vendor_code=row.get('Vendor Code', None)
-        ).first()
+        # Update or create Vendor, using code as unique identifier
+        vendor, created = Vendor.objects.update_or_create(
+            code=row.get('Vendor Code', None),
+            defaults={'name': row.get('Vendor', None)}
+        )
 
-        if existing_spend_data:
-            for column in row.index:
-                if 'Grand Total' in column:
-                    year = int(column.split()[-1])
-                    grand_total = row.get(column)
-                    grand_total = None if pd.isna(grand_total) else grand_total
-                    if grand_total is not None:
-                        overall_total += grand_total
+        # Create VendorSpendData linked to Vendor
+        vendor_spend_data, _ = VendorSpendData.objects.get_or_create(vendor=vendor)
+
+        overall_total = 0
+        for column in row.index:
+            if 'Grand Total' in column:
+                year = int(column.split()[-1])
+                grand_total = row.get(column)
+                grand_total = None if pd.isna(grand_total) else grand_total
+                
+                if grand_total is not None:
+                    overall_total += grand_total
                     VendorSpendDetail.objects.update_or_create(
-                        vendor_spend_data=existing_spend_data,
+                        vendor_spend_data=vendor_spend_data,
                         year=year,
                         defaults={'grand_total': grand_total},
                     )
-            existing_spend_data.overall_total = overall_total
-            existing_spend_data.save()
-        else:
-            vendor_spend_data = VendorSpendData.objects.create(
-                vendor=row.get('Vendor', None),
-                vendor_code=row.get('Vendor Code', None)
-            )
-            for column in row.index:
-                if 'Grand Total' in column:
-                    year = int(column.split()[-1])
-                    grand_total = row.get(column)
-                    grand_total = None if pd.isna(grand_total) else grand_total
-                    if grand_total is not None:
-                        overall_total += grand_total
-                    VendorSpendDetail.objects.create(
-                        vendor_spend_data=vendor_spend_data,
-                        year=year,
-                        grand_total=grand_total
-                    )
-            vendor_spend_data.overall_total = overall_total
-            vendor_spend_data.save()
+
+        vendor_spend_data.overall_total = overall_total
+        vendor_spend_data.save()
 
 
 def handle_vendor_matrix_data(matrix_file):
@@ -625,46 +629,34 @@ def handle_vendor_matrix_data(matrix_file):
     vendor_names_start_row = 7
     vendor_name_column = 1
 
-    programs_info = {
-        'GIPV': {'col_index': 10},
-        'Cost Reduction Activity': {'col_index': 11},
-        'PPKV': {'col_index': 12},
-        'DTE': {'col_index': 13},
-        'BEEP': {'col_index': 14},
-        'TMIEP': {'col_index': 15},
-        'Trade Mission': {'col_index': 16},
-        'Lean Mgmt': {'col_index': 17},
-        'Kaizen': {'col_index': 18},
-        'ICC': {'col_index': 19},
-        'Contract Nego Skill': {'col_index': 20},
-        'SSPOA': {'col_index': 21},
-        'eSPO': {'col_index': 22},
-        'VIP2': {'col_index': 23},
-        'IR4': {'col_index': 24}
-    }
-
-    # Create program attributes if they don't exist
-    for program_name in programs_info.keys():
+    # Create program attributes
+    program_names = ['GIPV', 'Cost Reduction Activity', 'PPKV', 'DTE', 'BEEP', 'TMIEP', 
+                     'Trade Mission', 'Lean Mgmt', 'Kaizen', 'ICC', 'Contract Nego Skill', 
+                     'SSPOA', 'eSPO', 'VIP2', 'IR4']
+    
+    for program_name in program_names:
         ProgramAttribute.objects.get_or_create(name=program_name)
 
-    vendors_data = matrix_df.iloc[vendor_names_start_row:]
-
-    for index, row in vendors_data.iterrows():
+    for index, row in matrix_df.iloc[vendor_names_start_row:].iterrows():
         vendor_name = row[vendor_name_column]
         if pd.isna(vendor_name):
             continue
 
-        remarks = row[25] if not pd.isna(row[25]) else None
-        ongoing_project = row[27] if not pd.isna(row[27]) else None
-        status = row[28] if not pd.isna(row[28]) else None
+        # Create or get Vendor
+        vendor, created = Vendor.objects.get_or_create(name=vendor_name)
 
-        vendor_matrix, created = VendorMatrixData.objects.update_or_create(
-            vendor=vendor_name,
-            defaults={'remarks': remarks, 'ongoing_project': ongoing_project, 'status': status}
+        # Create VendorMatrixData
+        vendor_matrix, _ = VendorMatrixData.objects.get_or_create(
+            vendor=vendor,
+            defaults={
+                'remarks': row[25] if not pd.isna(row[25]) else None,
+                'ongoing_project': row[27] if not pd.isna(row[27]) else None,
+                'status': row[28] if not pd.isna(row[28]) else None
+            }
         )
 
-        for program_name, program_info in programs_info.items():
-            col_index = program_info['col_index']
+        # Create program values
+        for program_name, col_index in zip(program_names, range(10, 25)):
             cell_value = row[col_index]
             cell_value = None if pd.isna(cell_value) else str(cell_value)
 
@@ -708,40 +700,29 @@ def view_data(request):
     return render(request, 'view_data.html', {'grade_data': grade_data, 'spend_data': spend_data, 'matrix_data': matrix_data})
 
 def grade_data_view(request):
-    # Get all vendor grade data and sort by the 'num' field (No attribute)
-    vendor_grade_data = VendorGradeData.objects.prefetch_related('year_grades').all().order_by('vendor_code')
-
-    # Extract unique years dynamically
+    vendor_grade_data = VendorGradeData.objects.select_related('vendor').prefetch_related('year_grades').all().order_by('vendor__code')
     years = VendorYearGrade.objects.values_list('year', flat=True).distinct().order_by('year')
-
     return render(request, 'grade_data_view.html', {
         'vendor_grade_data': vendor_grade_data,
         'years': years,
     })
 
-
 def spend_data_view(request):
-    spend_data = VendorSpendData.objects.prefetch_related('details').all().order_by('vendor_code')
-
+    spend_data = VendorSpendData.objects.select_related('vendor').prefetch_related('details').all().order_by('vendor__code')
     return render(request, 'spend_data_view.html', {'spend_data': spend_data})
 
 def matrix_data_view(request):
-    # Get all vendors with their program values prefetched
-    matrix_data = VendorMatrixData.objects.all().order_by('vendor').prefetch_related(
+    matrix_data = VendorMatrixData.objects.select_related('vendor').prefetch_related(
         'program_values',
         'program_values__program'
-    )
+    ).all().order_by('vendor__name')
     
-    # Get all programs ordered by their column position
     programs = ProgramAttribute.objects.all()
     
-    context = {
+    return render(request, 'matrix_data_view.html', {
         'matrix_data': matrix_data,
         'programs': programs
-    }
-    
-
-    return render(request, 'matrix_data_view.html', context)
+    })
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -798,13 +779,15 @@ def format_currency(value):
     except ValueError:
         return f"RM {value:,.2f}"  # Fallback if locale setting fails
 
+from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.multioutput import MultiOutputClassifier
 import numpy as np
 import pandas as pd
 from collections import defaultdict
-from django.shortcuts import render
 from django.db.models import Prefetch
+
 
 def vendor_landscape(request):
     # Get selected years from request parameters
@@ -821,13 +804,27 @@ def vendor_landscape(request):
     # Convert selected_years to integers for comparison
     selected_years = [int(year) for year in selected_years]
 
-    # Define labels for classification
-    x_axis = {
-        "R": "Category C",
-        "Y": "Category B",
-        "G": "Category A",
-        "Not specified": "Not specified",
-    }
+    # Define the new classification for grades
+    def get_grade_category(grades):
+        # Define the category logic for classification based on the grades for the selected years
+        if len(grades) == 3:
+            if grades[2] == 'R' and grades[1] == 'R' and grades[0] == 'R':
+                return "Category C 1"
+            elif grades[2] in ['G', 'Y', 'R'] and grades[1] == 'R' and grades[0] == 'R':
+                return "Category C 2"
+            elif grades[2] in ['G', 'Y', 'R'] and grades[1] in ['G', 'Y', 'R'] and grades[0] == 'R':
+                return "Category C 3"
+            elif (grades[2] in ['G', 'Y', 'R'] and grades[1] == 'R' and grades[0] == 'Y') or (grades[0] == 'R' and grades[1] in ['G', 'Y', 'R'] and grades[0] == 'Y'):
+                return "Category B 1"
+            elif grades[2] == 'Y' and grades[1] == 'Y' and grades[0] == 'Y':
+                return "Category B 2"
+            elif grades[2] in ['G', 'Y'] and grades[1] in ['G', 'Y'] and grades[0] == 'Y':
+                return "Category B 3"
+            elif (grades[2] == 'Y' and grades[1] == 'G' and grades[0] == 'G') or (grades[2] in ['Y', 'G'] and grades[1] == 'Y' and grades[0] == 'G'):
+                return "Category A 1"
+            elif grades[2] == 'G' and grades[1] == 'G' and grades[0] == 'G':
+                return "Category A 2"
+        return "Not specified"
 
     y_axis = [
         (250000000, float('inf'), ">RM 250 Millions"),
@@ -848,7 +845,7 @@ def vendor_landscape(request):
     ).all()
     
     spend_data = VendorSpendData.objects.all()
-    spend_dict = {item.vendor_code: item.overall_total for item in spend_data}
+    spend_dict = {item.vendor.code: item.overall_total for item in spend_data}
 
     # Prepare training data based on selected years
     train_data = []
@@ -856,7 +853,7 @@ def vendor_landscape(request):
     train_labels_spend = []
 
     for grade in grade_data:
-        spend_value = spend_dict.get(grade.vendor_code)
+        spend_value = spend_dict.get(grade.vendor.code)
         
         if spend_value:
             year_grades = list(grade.year_grades.all())
@@ -868,7 +865,8 @@ def vendor_landscape(request):
                 
                 spend_label = next((label for lower, upper, label in y_axis 
                                   if lower <= spend_value < upper), "Not specified")
-                grade_label = x_axis.get(year_grades[0].grade, "Not specified")
+                grades = [yg.grade for yg in year_grades[:3]]  # Get grades for the selected years
+                grade_label = get_grade_category(grades)  # Get category based on grades
 
                 train_labels_grade.append(grade_label)
                 train_labels_spend.append(spend_label)
@@ -888,15 +886,60 @@ def vendor_landscape(request):
         # Combine the two label arrays into a 2D array
         train_labels = np.column_stack((train_labels_grade, train_labels_spend))
 
-        # Train a multi-output classifier
+        # Split data into training and testing sets
+        X_train, X_test, y_train, y_test = train_test_split(
+            train_df, train_labels, test_size=0.2, random_state=42
+        )
+
+        # Initialize classifier
         clf = MultiOutputClassifier(DecisionTreeClassifier())
-        clf.fit(train_df, train_labels)
+        
+        # Perform Grid Search for hyperparameter tuning
+        param_grid = {
+            "estimator__max_depth": [3, 5],  # Avoid deep trees
+            "estimator__min_samples_split": [5, 10],  # Ensure minimum 5 or 10 samples per split
+            "estimator__min_samples_leaf": [3, 5],  # Avoid small leaves
+            "estimator__ccp_alpha": [0.001, 0.01, 0.1],  # Regularization parameter
+        }
+
+        grid_search = GridSearchCV(clf, param_grid, cv=5)  # Use 5-fold CV
+        grid_search.fit(X_train, y_train)
+
+        # Best parameters from GridSearchCV
+        print("Best Parameters:", grid_search.best_params_)
+        print("Best Cross-Validation Score:", grid_search.best_score_)
+
+        # Evaluate model on the test data
+        clf = grid_search.best_estimator_
+        y_pred = clf.predict(X_test)
+
+        # Calculate accuracy for each label separately
+        print("Accuracy for Grade Label:")
+        print(accuracy_score(y_test[:, 0], y_pred[:, 0]))  # Grade label accuracy
+        print("Accuracy for Spend Label:")
+        print(accuracy_score(y_test[:, 1], y_pred[:, 1]))  # Spend label accuracy
+
+        # Confusion Matrix and Classification Report for each label
+        print("Confusion Matrix for Grade Label:")
+        print(confusion_matrix(y_test[:, 0], y_pred[:, 0]))
+        print("Classification Report for Grade Label:")
+        print(classification_report(y_test[:, 0], y_pred[:, 0]))
+
+        print("Confusion Matrix for Spend Label:")
+        print(confusion_matrix(y_test[:, 1], y_pred[:, 1]))
+        print("Classification Report for Spend Label:")
+        print(classification_report(y_test[:, 1], y_pred[:, 1]))
+
+        # Cross-validation scores
+        scores = cross_val_score(clf, train_df, train_labels, cv=5)
+        print("Cross-Validation Scores:", scores)
+        print("Mean Cross-Validation Accuracy:", scores.mean())
 
         # Generate vendor landscape using ML predictions
         grid = defaultdict(lambda: defaultdict(list))
 
         for grade in grade_data:
-            spend_value = spend_dict.get(grade.vendor_code)
+            spend_value = spend_dict.get(grade.vendor.code)
             
             if spend_value:
                 year_grades = list(grade.year_grades.order_by('-year')[:3])
@@ -933,7 +976,7 @@ def vendor_landscape(request):
     spend_labels = [label for _, _, label in y_axis]
 
     # Create the final grid with desired category order
-    desired_order = ["Category C", "Category B", "Category A", "Not specified"]
+    desired_order = ["Category C 1", "Category C 2", "Category C 3", "Category B 1", "Category B 2", "Category B 3", "Category A 1", "Category A 2", "Not specified"]
     sorted_grid = {key: dict(grid[key]) for key in desired_order if key in grid}
 
     return render(request, 'vendor_landscape.html', {
@@ -942,6 +985,9 @@ def vendor_landscape(request):
         "available_years": available_years,
         "default_years": selected_years,
     })
+
+
+
 
 def format_currency(value):
     """Format currency value as string with RM prefix"""
@@ -1114,7 +1160,7 @@ def render_vendor_grade_table(context):
         html += "<tr>"
         html += f"<td>{vendor.vendor}</td>"
         html += f"<td>{vendor.short_name}</td>"
-        html += f"<td>{vendor.vendor_code}</td>"
+        html += f"<td>{vendor.vendor.code}</td>"
         
         for year in context['years']:
             grade = vendor.year_grades.filter(year=year).first()
@@ -1160,7 +1206,7 @@ def render_spend_data_table(context):
     for data in spend_data:
         html += "<tr>"
         html += f"<td>{data.vendor or 'N/A'}</td>"
-        html += f"<td>{data.vendor_code or 'N/A'}</td>"
+        html += f"<td>{data.vendor.code or 'N/A'}</td>"
         
         # Dynamic grand total columns
         details_dict = {detail.year: detail.grand_total for detail in data.details.all()}
@@ -1222,7 +1268,7 @@ def render_matrix_data_table(context):
     return html
 
 def grade_data_download(request):
-    vendor_grade_data = VendorGradeData.objects.prefetch_related('year_grades').all().order_by('vendor_code')
+    vendor_grade_data = VendorGradeData.objects.prefetch_related('year_grades').all().order_by('vendor__code')
     years = VendorYearGrade.objects.values_list('year', flat=True).distinct().order_by('year')
     context = {
         'vendor_grade_data': vendor_grade_data, 
@@ -1230,9 +1276,10 @@ def grade_data_download(request):
     }
     return download_table_pdf(request, 'grade_data_view.html', context)
 
+
 def spend_data_download(request):
     # Fetch VendorSpendData with their related details
-    spend_data = VendorSpendData.objects.prefetch_related('details').all()
+    spend_data = VendorSpendData.objects.prefetch_related('details').all().order_by('vendor__code')
     context = {'spend_data': spend_data}
     return download_table_pdf(request, 'spend_data_view.html', context)
 
@@ -1240,7 +1287,7 @@ def matrix_data_download(request):
     # Fetch matrix data with related program values
     matrix_data = VendorMatrixData.objects.prefetch_related(
         'program_values__program'
-    ).all().order_by('vendor')
+    ).all().order_by('vendor__code')
     
     # Get all programs
     programs = ProgramAttribute.objects.all()
@@ -1251,6 +1298,17 @@ def matrix_data_download(request):
     }
     return download_table_pdf(request, 'matrix_data_view.html', context)
 
+from django.shortcuts import redirect
+from django.contrib import messages
+
+def delete_all_vendors(request):
+    try:
+        Vendor.objects.all().delete()
+        messages.success(request, 'All vendor data has been successfully deleted.')
+    except Exception as e:
+        messages.error(request, f'An error occurred while deleting data: {str(e)}')
+    
+    return redirect('home')
 
 
 

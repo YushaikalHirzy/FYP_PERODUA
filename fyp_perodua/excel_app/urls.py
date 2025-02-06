@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import add_program, analytics_view, delete_program, grade_data_download, spend_data_download,matrix_data_download, grade_data_view, matrix_data_view, spend_data_view, upload_excel, home_view, view_data, login_view, vendor_landscape, register_view, logout_view,delete_all_vendor_grade_data,delete_all_vendor_spend_data, delete_all_vendor_matrix_data
+from .views import add_program, analytics_view, delete_all_vendors, delete_program, grade_data_download, spend_data_download,matrix_data_download, grade_data_view, matrix_data_view, spend_data_view, upload_excel, home_view, view_data, login_view, vendor_landscape, register_view, logout_view,delete_all_vendor_grade_data,delete_all_vendor_spend_data, delete_all_vendor_matrix_data
 from .views import (
     VendorGradeDataCreateView, VendorGradeDataUpdateView, VendorGradeDataDeleteView,
     VendorSpendDataCreateView, VendorSpendDataUpdateView, VendorSpendDataDeleteView,
@@ -44,6 +44,6 @@ urlpatterns = [
     path('delete-all-grade-data/', delete_all_vendor_grade_data, name='delete_all_grade_data'),
     path('delete-all-spend-data/', delete_all_vendor_spend_data, name='delete_all_spend_data'),
     path('delete-all-matrix-data/', delete_all_vendor_matrix_data, name='delete_all_matrix_data'),
-
+    path('delete-all-vendors/', delete_all_vendors, name='delete_all_vendors'),
     
 ]
